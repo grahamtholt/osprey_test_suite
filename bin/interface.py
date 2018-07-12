@@ -29,11 +29,27 @@ Defaults to combinations between all chains.
         # Make nicer names for the default case
         a_name = "".join(a.split()).replace("chain","")
         b_name = "".join(b.split()).replace("chain","")
+        sel_name = "int_"+a_name+b_name
         try:
-            sele = cmd.select( "int_"+a_name+b_name, selection)
+            sele = cmd.select(sel_name, selection)
         except:
             print "Error in selection: "+selection
             raise CmdException
+
+        # Remove empty selections
+        stored.test = []
+        try:
+            cmd.iterate(sel_name+" and name ca",
+                        "stored.test.append(\"\"+resi)")
+        except:
+            print "Cannot iterate through "+sel_name
+            raise CmdException
+        if not stored.test:
+            try:
+                cmd.delete(sel_name)
+            except:
+                print "Cannot delete "+sel_name
+                raise CmdException
 
 # Make this runnable as a command from pymol
 cmd.extend( "interface", interface )
