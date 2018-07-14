@@ -1,14 +1,25 @@
-from pymol import cmd, CmdException, stored
+#!/usr/bin/env python
+"""Select protein-protein interface in PyMol
+
+This module creates PyMol selections from the interface between
+1) Two given selections, or 2) All polymer chains in the pdb.
+"""
+
 from itertools import combinations
+from pymol import cmd, CmdException, stored
+
+__author__ = "Graham Holt"
+__version__ = "0.0.0"
+__status__ = "Prototype"
 
 def interface( sele1="", sele2="", d=4):
-    """
-Select and name the interfaces between selections.
-Defaults to combinations between all chains.
+    """Select and name the interfaces between selections.
 
-@param sele1: First PyMol selection
-@param sele2: Second PyMol selection
-@param d: Depth of interface
+    Defaults to combinations between all chains.
+
+    @param sele1: First PyMol selection
+    @param sele2: Second PyMol selection
+    @param d: Depth of interface
 
     """
     d = str(d)
