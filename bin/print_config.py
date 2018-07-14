@@ -1,5 +1,16 @@
-from pymol import cmd, CmdException, stored
+#!/usr/bin/env python
+"""Print out a design config file from PyMol
+
+This module reads one mutable and one flexible PyMol selection, and converts
+them into variables convenient for defining an OSPREY 3.0 configuration space.
+"""
+
 import os
+from pymol import cmd, CmdException, stored
+
+__author__ = "Graham Holt"
+__version__ = "0.0.0"
+__status__ = "Production"
 
 STRAND_NAME = "strand"
 """
@@ -14,7 +25,8 @@ DEFAULT_MUTATIONS_ALL = [
 
 """
 
-HEADER = ""
+HEADER = """#The following information is sufficient to generate an OSPREY 3.0
+#configuration space"""
 """
 The header to write out to the config file
 """
@@ -27,6 +39,9 @@ def print_config(mut="mut", flex="flex", out="design.cfg"):
     @param flex: PyMol selection name for the flexible design residues
     @param out: System path to output file
     """
+    # Find the input pdb file
+    pdb_file_name = find_pdb_file(mut, flex)
+
     # Collect the chain ID and residue number for mutable and flexible res
     stored.mut_list = []
     stored.flex_list = []
@@ -75,10 +90,45 @@ def print_config(mut="mut", flex="flex", out="design.cfg"):
     # Print out variables
     with open(out, 'w') as f:
         f.write(HEADER+"\n")
+        f.write("mol = \""+str(pdb_file_name)+"\"\n")
         for strand in strand_defs:
             f.write(strand+" = "+str(strand_defs[strand])+"\n")
         for strand in strand_flex_all:
             f.write(strand+"_flex = "+str(strand_flex_all[strand])+"\n")
-    
+
+def find_pdb_file(mut, flex):
+    """
+    Find the pdb file of a pymol selection
+
+    This function checks the current working directory for a pdb file with the
+    same name as the selection model. This will ONLY work if the file is in the
+    cwd.
+
+    @param mut: PyMol selection name for the mutable design residues
+    @param flex: PyMol selection name for the flexible design residues
+    """
+    mut_obj_list = cmd.get_names("objects", 0, mut)
+    flex_obj_list = cmd.get_names("objects", 0, flex)
+
+    assert len(mut_obj_list) == 1
+    assert len(flex_obj_list) == 1
+
+    mut_obj = mut_obj_list[0]
+    flex_obj = flex_obj_list[0]
+
+    assert mut_obj == flex_obj
+
+    pdb_rel = mut_obj+".pdb"
+
+    if os.path.isfile(pdb_rel):
+        # Return the absolute path to the pdb
+        return os.path.abspath(pdb_rel)
+        # Return the relative path to the pdb
+        # return pdb_rel
+    else:
+        print "ERROR! Could not find pdb file. Please set manually"
+        return "UNSET"
+
+
 # Make this executable as a command from pymol
 cmd.extend( "print_config", print_config )
