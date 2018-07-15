@@ -35,6 +35,16 @@ def gen_shell(prune_sele=0, aggr=0, mut="mut", r=4):
     except:
         raise CmdException
 
+    # modify view
+    try:
+        cmd.hide("everything", "all")
+        cmd.show("sticks", mut)
+        cmd.show("lines", flex_name)
+        #cmd.hide("everything","hydrogens")
+        cmd.orient(flex_name)
+    except:
+        raise CmdException
+
     mut_list = res_from_sele(mut)
     flex_list = res_from_sele(flex_name)
 
