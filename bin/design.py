@@ -31,7 +31,7 @@ HEADER = """#The following information is sufficient to generate an OSPREY 3.0
 The header to write out to the config file
 """
 
-def print_config(mut="mut", flex="flex", out="design.cfg"):
+def design(mut="mut", flex="flex", out="design.cfg"):
     """
     Print out the OSPREY config information for a design to file
 
@@ -131,4 +131,4 @@ def find_pdb_file(mut, flex):
 
 
 # Make this executable as a command from pymol
-cmd.extend( "print_config", print_config )
+cmd.extend( "design", design )
