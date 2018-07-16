@@ -26,8 +26,9 @@ def interface( sele1="", sele2="", d=4, sc_only=0):
     """
     d = str(d)
     stored.chains = []
+    print sele1, sele2
 
-    if "" in [sele1, sele2] or None in [sele1, sele2]:
+    if "\"\"" in [sele1, sele2] or None in [sele1, sele2]:
         chain_names = cmd.get_chains('polymer')
         stored.chains = [ "chain "+s for s in chain_names ]
 
@@ -36,15 +37,15 @@ def interface( sele1="", sele2="", d=4, sc_only=0):
         stored.chains.append(sele2)
 
     for a, b in combinations(stored.chains, 2):
-        if sc_only:
+        if int(sc_only) == 1:
             selection = ( "(br. ("+a+" and not name c+ca+o+n+h+ha) "+
                          "within "+d+" of ("+b+" and not name c+ca+o+n+h+ha)) "+
-                         "or (br. ("+b+" and not name c+ca+o+n+h+ha) "+
+                         " or (br. ("+b+" and not name c+ca+o+n+h+ha) "+
                          "within "+d+" of ("+a+" and not name c+ca+o+n+h+ha)) "
                         )
         else:
             selection = ( "(br. "+a+" within "+d+" of "+b+")"+
-                         "or (br. "+b+" within "+d+" of "+a+")"
+                         " or (br. "+b+" within "+d+" of "+a+")"
                         )
         # Make nicer names for the default case
         a_name = "".join(a.split()).replace("chain","")
