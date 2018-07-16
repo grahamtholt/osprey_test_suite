@@ -12,20 +12,22 @@ __author__ = "Graham Holt"
 __version__ = "0.0.0"
 __status__ = "Prototype"
 
-def interface( sele1="", sele2="", d=4):
+def interface( sele1="", sele2="", d=4, sc_only=0):
     """Select and name the interfaces between selections.
 
     Defaults to combinations between all chains.
 
-    @param sele1: First PyMol selection
-    @param sele2: Second PyMol selection
-    @param d: Depth of interface
+    Args:
+        sele1 (str): First PyMol selection
+        sele2 (str): Second PyMol selection
+        d (int): Depth of interface
+        sc_only (int): Filter by side-chain contacts only, instead of all atoms
 
     """
     d = str(d)
     stored.chains = []
 
-    if sele1 == "" or sele2 == "":
+    if "" in [sele1, sele2] or None in [sele1, sele2]:
         chain_names = cmd.get_chains('polymer')
         stored.chains = [ "chain "+s for s in chain_names ]
 
@@ -34,9 +36,16 @@ def interface( sele1="", sele2="", d=4):
         stored.chains.append(sele2)
 
     for a, b in combinations(stored.chains, 2):
-        selection = ( "(br. "+a+" within "+d+" of "+b+")"+
-                     "or (br. "+b+" within "+d+" of "+a+")"
-                    )
+        if sc_only:
+            selection = ( "(br. ("+a+" and not name c+ca+o+n+h+ha) "+
+                         "within "+d+" of ("+b+" and not name c+ca+o+n+h+ha)) "+
+                         "or (br. ("+b+" and not name c+ca+o+n+h+ha) "+
+                         "within "+d+" of ("+a+" and not name c+ca+o+n+h+ha)) "
+                        )
+        else:
+            selection = ( "(br. "+a+" within "+d+" of "+b+")"+
+                         "or (br. "+b+" within "+d+" of "+a+")"
+                        )
         # Make nicer names for the default case
         a_name = "".join(a.split()).replace("chain","")
         b_name = "".join(b.split()).replace("chain","")
