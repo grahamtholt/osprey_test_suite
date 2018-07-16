@@ -45,47 +45,12 @@ def gen_shell(prune_sele=0, aggr=0, mut="mut", r=4):
     except:
         raise CmdException
 
-    mut_list = res_from_sele(mut)
-    flex_list = res_from_sele(flex_name)
+    mut_list = residue.Residue.res_from_sele(mut)
+    flex_list = residue.Residue.res_from_sele(flex_name)
 
 
     prune_gly_pro(flex_name, mut_list, flex_list, aggr, r, prune_sele)
     prune_distance(flex_name, mut_list, flex_list, aggr, r, prune_sele)
-
-def res_from_sele(sele_name):
-    """Generate a list of residue objects from a PyMol selection
-
-    @param sele_name: PyMol selection name
-    """
-
-    # Get the list of all atoms in the selection
-    stored.atoms = []
-    try:
-        cmd.iterate(sele_name,
-                    "stored.atoms.append([type, ID, name, alt, resn, chain,\
-                    resi,\"\",(0,0,0), q, b, elem, \"\"])")
-        # Get coordinates
-        # NOTE: PYMOL MIGHT HAVE ROUNDING ERRORS FOR COORDINATES!
-        coords_list = cmd.get_coords(sele_name, 1)
-    except:
-        raise CmdException
-
-    # Write coordinates, extract icode, make atom lists, reslist
-    res_list = []
-    for e, coord in zip(stored.atoms, coords_list):
-        e[8] = tuple(coord)
-        m = re.match(r"(\d+)(\w?)", e[6])
-        e[6] = int(m.group(1))
-        e[7] = m.group(2)
-
-        #make residues
-        a = atom.Atom(*e)
-        if not res_list or not res_list[-1].can_contain(a):
-            res_list.append(residue.Residue([a]))
-        else:
-            res_list[-1].add_atom(a)
-
-    return res_list
 
 def prune_distance(flex_sele_name, mut_list, flex_list, aggr, r, prune_sele):
     """Remove residues from the flexible selection based on criterion
