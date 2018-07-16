@@ -45,8 +45,8 @@ def gen_shell(prune_sele=0, aggr=0, mut="mut", r=4):
     except:
         raise CmdException
 
-    mut_list = residue.Residue.res_from_sele(mut)
-    flex_list = residue.Residue.res_from_sele(flex_name)
+    mut_list = residue.Residue.sele_to_res(mut)
+    flex_list = residue.Residue.sele_to_res(flex_name)
 
 
     prune_gly_pro(flex_name, mut_list, flex_list, aggr, r, prune_sele)
