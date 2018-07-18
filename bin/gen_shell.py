@@ -70,7 +70,7 @@ def prune_distance(flex_sele_name, mut_list, flex_list, aggr, r, prune_sele):
     for flex in flex_list:
         to_prune = True
         for mut in mut_list:
-            if flex.min_sc_distance(mut) < (r-aggr*0.2):
+            if flex.min_sc_any_distance(mut) < (r-aggr*0.2):
                 to_prune = False
         if to_prune:
             do_pruning(flex_sele_name, flex, prune_sele)

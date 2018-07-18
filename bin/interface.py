@@ -12,7 +12,7 @@ __author__ = "Graham Holt"
 __version__ = "0.0.0"
 __status__ = "Prototype"
 
-def interface( sele1="", sele2="", d=4, sc_only=0):
+def interface( sele1=None, sele2=None, d=4, sc_only=0):
     """Select and name the interfaces between selections.
 
     Defaults to combinations between all chains.
@@ -26,7 +26,6 @@ def interface( sele1="", sele2="", d=4, sc_only=0):
     """
     d = str(d)
     stored.chains = []
-    print sele1, sele2
 
     if "\"\"" in [sele1, sele2] or None in [sele1, sele2]:
         chain_names = cmd.get_chains('polymer')
