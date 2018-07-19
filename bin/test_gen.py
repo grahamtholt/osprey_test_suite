@@ -5,8 +5,10 @@
 """
 
 from pymol import cmd, CmdException, stored
+import pymol
 import os
 import itertools
+import argparse
 
 import atom
 import residue
@@ -30,10 +32,10 @@ def test_gen(pdb):
     """
 
     # Load pymol file
-    #try:
-       #cmd.load(pdb)
-    #except:
-        #raise CmdException
+    try:
+       cmd.load(pdb)
+    except:
+        raise CmdException
 
     # Generate all interfaces
     #interface.interface()
@@ -58,9 +60,9 @@ def test_gen(pdb):
         print inter_2
         mut_list.extend(gen_mut(inter_2))
 
-    gen_scenes(mut_list)
 
     # For each mutable residue set, generate a flexible shell and print design
+    counter = 0
     for mut in mut_list:
         #Select muts
         obj_name = cmd.get_names('objects',0,'all')[0]
@@ -74,8 +76,10 @@ def test_gen(pdb):
 
         #design()
         design.design("mut","flex",('_'.join([obj_name, chain,
-                                              "confsize"]))+".cfs")
+                                              "confsize", str(counter)]))+".cfs")
+        counter = counter+1
 
+    gen_scenes(mut_list)
 
 def gen_mut(sele_name):
     """Select combinations of mutable residues
@@ -112,10 +116,8 @@ def gen_mut(sele_name):
         for e in old_set:
             for pair in close_pairs:
                 if len(e.intersection(pair)) == 1:
-                    putative_design = e.union(pair)
-                    if is_globular(putative_design, 3):
-                        new_mut_set.add(putative_design)
-                        new_union = True
+                    new_mut_set.add(e.union(pair))
+                    new_union = True
         mut_list.update(new_mut_set)
         old_set = new_mut_set
 
@@ -132,8 +134,6 @@ def is_globular(mut_set, dist):
     return True
 
 def gen_scenes(mut_list):
-    # generate a reference
-    cmd.create("reference", "all", 1, 1)
 
     # create scenes for each mut
     for index, mut in enumerate(mut_list):
@@ -148,5 +148,30 @@ def gen_scenes(mut_list):
         cmd.set("stick_color","red", "all", state=index)
         cmd.show("sticks",selection)
 
+    # generate a reference
+    cmd.create("reference", "all", 1, 1)
+
 # Make this runnable as a command from pymol
 cmd.extend( "test_gen", test_gen )
+
+def main(args):
+    pymol.pymol_argv = ['pymol','-qcK']
+    pymol.finish_launching()
+
+    test_gen(args.pdb)
+
+##################################################
+# Conditional main
+##################################################
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='This description is shown when -h or --help are passed as arguments.')
+
+    parser.add_argument('pdb',
+            type = str,
+            default = None,
+            help = 'The pdb file from which to generate mutations')
+
+    args = parser.parse_args()
+
+    main(args)
