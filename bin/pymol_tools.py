@@ -4,13 +4,13 @@
 
 """
 from pymol import cmd, CmdException, stored
-import pymol
 
 import re
 import os
 from itertools import combinations
 from itertools import chain as iterchain
 import argparse
+import imp
 
 import atom
 import residue
@@ -280,6 +280,7 @@ def test_gen():
         mut_list.extend(gen_mut(inter_2))
 
 
+    print 'Generated '+str(len(mut_list))+' sets of mutations'
     # For each mutable residue set, generate a flexible shell and print design
     counter = 0
     for mut in mut_list:
@@ -295,10 +296,12 @@ def test_gen():
 
         #print output
         print_design("mut","flex",('_'.join([obj_name, chain,
-                                              "confsize", str(counter)]))+".cfs")
+                                              "confsize", str(counter),
+                                             str(len(mut))+'muts']))+".cfs")
         counter = counter+1
 
-    gen_scenes(mut_list)
+    #optional, but slow
+    #gen_scenes(mut_list)
 
 def gen_mut(sele_name):
     """Select combinations of mutable residues
@@ -340,8 +343,6 @@ def gen_mut(sele_name):
         mut_list.update(new_mut_set)
         old_set = new_mut_set
 
-    for mut in mut_list:
-        print ', '.join(str(e) for e in mut)
     return mut_list
 
 def is_globular(mut_set, dist):
@@ -427,10 +428,12 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
     with open(out, 'w') as f:
         f.write(HEADER+"\n")
         f.write("mol = \""+str(pdb_file_name)+"\"\n")
-        for strand in strand_defs:
-            f.write(strand+" = "+str(strand_defs[strand])+"\n")
-        for strand in strand_flex_all:
-            f.write(strand+"_flex = "+str(strand_flex_all[strand])+"\n")
+        f.write("strand_defs = "+str(strand_defs)+"\n")
+        f.write("strand_flex = "+str(strand_flex_all)+"\n")
+        #for strand in strand_defs:
+            #f.write(strand+" = "+str(strand_defs[strand])+"\n")
+        #for strand in strand_flex_all:
+            #f.write(strand+"_flex = "+str(strand_flex_all[strand])+"\n")
 
 def find_pdb_file(mut, flex):
     """
@@ -464,6 +467,15 @@ def find_pdb_file(mut, flex):
     else:
         print "ERROR! Could not find pdb file. Please set manually"
         return "UNSET"
+
+def load_cfs(cfs_file):
+    """Load a configuration space file as a visual design
+    """
+
+    # import confspace file
+    conf_space = imp.load_source('conf_space', cfs_file)
+    cmd.load(conf_space.mol)
+    for d in conf_space.strand_flex:
 
 
 # Make this executable as a command from pymol
