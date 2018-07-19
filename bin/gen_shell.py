@@ -51,6 +51,7 @@ def gen_shell(prune_sele=0, aggr=0, mut="mut", r=4):
 
     prune_gly_pro(flex_name, mut_list, flex_list, aggr, r, prune_sele)
     prune_distance(flex_name, mut_list, flex_list, aggr, r, prune_sele)
+    prune_angle(flex_name, mut_list, flex_list, aggr, r, prune_sele)
 
 def prune_distance(flex_sele_name, mut_list, flex_list, aggr, r, prune_sele):
     """Remove residues from the flexible selection based on criterion
@@ -71,6 +72,16 @@ def prune_distance(flex_sele_name, mut_list, flex_list, aggr, r, prune_sele):
         to_prune = True
         for mut in mut_list:
             if flex.min_sc_any_distance(mut) < (r-aggr*0.2):
+                to_prune = False
+        if to_prune:
+            do_pruning(flex_sele_name, flex, prune_sele)
+
+def prune_angle(flex_sele_name, mut_list, flex_list, aggr, r, prune_sele):
+    """Prune by angle between calpha-cbeta vectors"""
+    for flex in flex_list:
+        to_prune = True
+        for mut in mut_list:
+            if not flex.angles_diverge(mut, 90):
                 to_prune = False
         if to_prune:
             do_pruning(flex_sele_name, flex, prune_sele)
