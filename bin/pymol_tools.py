@@ -1,7 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: <utf-8> -*-
 """Methods to manipulate PyMol sessions and PDB files
 
+Todo:
+    * Improve gen_shell residue pruning. This is the most obvious way to
+    improve things
 """
 from pymol import cmd, CmdException, stored
 
@@ -133,7 +134,7 @@ def gen_shell(prune_sele=0, aggr=0, mut="mut", r=4):
         cmd.hide("everything", "all")
         cmd.show("sticks", mut)
         cmd.show("lines", flex_name)
-        #cmd.hide("everything","hydrogens")
+        cmd.hide("everything","hydrogens")
         cmd.orient(flex_name)
     except:
         raise CmdException
@@ -168,7 +169,9 @@ def prune_distance(flex_sele_name, mut_list, flex_list, aggr, r, prune_sele):
     for flex in flex_list:
         to_prune = True
         for mut in mut_list:
-            if flex.min_sc_any_distance(mut) < (r-aggr*0.2):
+            #TODO: Make a decision on this. MAybe sc_any for bb flex?
+            #if flex.min_sc_any_distance(mut) < (r-aggr*0.2):
+            if flex.min_sc_sc_distance(mut) < (r-aggr*0.2):
                 to_prune = False
         if to_prune:
             do_pruning(flex_sele_name, flex, prune_sele)
@@ -330,9 +333,12 @@ def gen_mut(sele_name):
     mut_list.update(close_pairs)
 
     # Iteratively union close pairs until cannot any longer
+    # Or, if we reach a maximum of 6 mutable residues
+    max_num_mut = 6
+    mut_counter = 2
     new_union = True
     old_set = close_pairs
-    while new_union == True:
+    while new_union == True and mut_counter < max_num_mut:
         new_union = False
         new_mut_set = set()
         for e in old_set:
@@ -342,6 +348,7 @@ def gen_mut(sele_name):
                     new_union = True
         mut_list.update(new_mut_set)
         old_set = new_mut_set
+        mut_counter = mut_counter + 1
 
     return mut_list
 
@@ -375,9 +382,10 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
     """
     Print out the OSPREY config information for a design to file
 
-    @param mut: PyMol selection name for the mutable design residues
-    @param flex: PyMol selection name for the flexible design residues
-    @param out: System path to output file
+    Args:
+        mut (str): PyMol selection name for the mutable design residues
+        flex (str): PyMol selection name for the flexible design residues
+        out (str): System path to output file
     """
     # Find the input pdb file
     pdb_file_name = find_pdb_file(mut, flex)
@@ -396,6 +404,7 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
     # Note that the "chain" function here comes from itertools
     chains = set([ res.chain_id for res in iterchain(mut_list, flex_list) ])
 
+    # TODO: Consider changing the format to be easier to read and write...
     # For each chain, process muts and flex
     strand_defs = {}
     strand_flex_all = {}
@@ -421,7 +430,8 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
         chain_muts = (res for res in flex_list if res.chain_id == chain)
         for res in chain_muts:
             this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
-                    res.res_name
+                    [res.res_name]
+
         strand_flex_all[strand_key] = this_strand_flex
 
     # Print out variables
@@ -443,8 +453,9 @@ def find_pdb_file(mut, flex):
     same name as the selection model. This will ONLY work if the file is in the
     cwd.
 
-    @param mut: PyMol selection name for the mutable design residues
-    @param flex: PyMol selection name for the flexible design residues
+    Args:
+        mut (str): PyMol selection name for the mutable design residues
+        flex(str): PyMol selection name for the flexible design residues
     """
     mut_obj_list = cmd.get_names("objects", 0, mut)
     flex_obj_list = cmd.get_names("objects", 0, flex)
@@ -469,17 +480,77 @@ def find_pdb_file(mut, flex):
         return "UNSET"
 
 def load_cfs(cfs_file):
-    """Load a configuration space file as a visual design
+    """Load a configuration space file as a visual PyMol design
+
+    Args:
+        cfs_file (str): The cfs file that contains the design confspace
     """
 
     # import confspace file
     conf_space = imp.load_source('conf_space', cfs_file)
-    cmd.load(conf_space.mol)
-    for d in conf_space.strand_flex:
+    # get flexible and mutable residues in nice format
+    mut_dict = dict()
+    flex_dict = dict()
+    for d in conf_space.strand_flex.values():
+        mut_list = []
+        flex_list = []
+        chain = next(iter(d.keys()))[:1]
+        for res, mut_allowed in d.iteritems():
+            # Check to make sure all chains match
+            this_chain = res[:1]
+            assert chain == this_chain
 
+            resi = res[1:]
+            if len(mut_allowed) > 1:
+                mut_list.append(resi)
+            else:
+                flex_list.append(resi)
+
+        # Assign resis to dicts
+        mut_dict[chain] = mut_list
+        flex_dict[chain] = flex_list
+    print(str(mut_dict))
+    # Make pymol session
+    try:
+        cmd.load(conf_space.mol)
+    except:
+        raise CmdException
+        print "Error! Cannot load pdb from "+conf_space.mol
+    try:
+        cmd.select("mut", "none")
+        cmd.select("flex", "none")
+    except:
+        raise CmdException
+        print "Error! Cannot select empty selections"
+    # Select mutable residues
+    for chain, resi_list in mut_dict.iteritems():
+        if resi_list:
+            mut_selection = "mut or (chain "+chain+" and resi "+\
+                    "+".join(resi_list)+")"
+            try:
+                cmd.select("mut", mut_selection)
+            except:
+                raise CmdException
+    # Select flexible residues
+    for chain, resi_list in flex_dict.iteritems():
+        if resi_list:
+            flex_selection = "flex or (chain "+chain+" and resi "+\
+                    "+".join(resi_list)+")"
+            try:
+                cmd.select("flex", flex_selection)
+            except:
+                raise CmdException
+    # Show sticks and/or lines
+    try:
+        cmd.show("sticks", "mut")
+        cmd.show("lines", "flex")
+        cmd.hide("everything", "hydrogens")
+    except:
+        raise CmdException
 
 # Make this executable as a command from pymol
 cmd.extend( "print_design", print_design )
 cmd.extend( "test_gen", test_gen )
 cmd.extend( "gen_shell", gen_shell )
 cmd.extend( "interface", interface )
+cmd.extend( "load_cfs", load_cfs )
