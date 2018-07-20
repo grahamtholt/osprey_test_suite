@@ -333,9 +333,12 @@ def gen_mut(sele_name):
     mut_list.update(close_pairs)
 
     # Iteratively union close pairs until cannot any longer
+    # Or, if we reach a maximum of 6 mutable residues
+    max_num_mut = 6
+    mut_counter = 2
     new_union = True
     old_set = close_pairs
-    while new_union == True:
+    while new_union == True and mut_counter < max_num_mut:
         new_union = False
         new_mut_set = set()
         for e in old_set:
@@ -345,6 +348,7 @@ def gen_mut(sele_name):
                     new_union = True
         mut_list.update(new_mut_set)
         old_set = new_mut_set
+        mut_counter = mut_counter + 1
 
     return mut_list
 
