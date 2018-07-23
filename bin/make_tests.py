@@ -12,7 +12,7 @@ import argparse
 import os
 import sys
 import glob
-from shutil import copyfile
+from shutil import move
 import pymol
 
 import pymol_tools
@@ -53,7 +53,7 @@ def main(args):
 
     # Copy .cfs files from current directory to pdb directory
     for f in glob.glob("*.cfs"):
-        copyfile(f,os.path.join(out_dir,f))
+        move(f,os.path.join(out_dir,f))
 
     # Return to original directory
     os.chdir(orig_dir)
