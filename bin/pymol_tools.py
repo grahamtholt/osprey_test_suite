@@ -33,10 +33,13 @@ DEFAULT_MUTATIONS_ALL = [
 
 """
 
+DEFAULT_ROT_FILE = "../datafiles/LovellRotamer.dat"
+"""The default rotamer file
+"""
+
 HEADER = """#The following information is sufficient to generate an OSPREY 3.0
 #configuration space"""
-"""
-The header to write out to the config file
+"""The header to write out to the config file
 """
 
 def interface(sele1=None, sele2=None, d=4, sc_only=0):
@@ -298,9 +301,8 @@ def test_gen():
         gen_shell(1,0,"mut",5)
 
         #print output
-        print_design("mut","flex",('_'.join([obj_name, chain,
-                                              "confsize", str(counter),
-                                             str(len(mut))+'muts']))+".cfs")
+        name = '_'.join([obj_name[:4], chain,"flexonly"])+".cfs"
+        print_design("mut","flex",name)
         counter = counter+1
 
     #optional, but slow
@@ -425,7 +427,8 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
         chain_muts = (res for res in mut_list if res.chain_id == chain)
         for res in chain_muts:
             this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
-                    DEFAULT_MUTATIONS_ALL
+                    [res.res_name]
+                    #DEFAULT_MUTATIONS_ALL
         # For flexible residues in strand, add all mutations by default
         chain_muts = (res for res in flex_list if res.chain_id == chain)
         for res in chain_muts:
@@ -434,8 +437,15 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
 
         strand_flex_all[strand_key] = this_strand_flex
 
+    conf_size = get_confspace_size(strand_flex_all)
+    conf_size_str = '%.3E' % conf_size
+    num_res = str(get_num_res(strand_flex_all))+"res"
+    # Modify out with confsize
+    basename, ext = os.path.splitext(out)
+    new_name = '_'.join([basename, num_res, conf_size_str])+ext
+    print "Writing "+new_name
     # Print out variables
-    with open(out, 'w') as f:
+    with open(new_name, 'w') as f:
         f.write(HEADER+"\n")
         f.write("mol = \""+str(pdb_file_name)+"\"\n")
         f.write("strand_defs = "+str(strand_defs)+"\n")
@@ -547,6 +557,39 @@ def load_cfs(cfs_file):
         cmd.hide("everything", "hydrogens")
     except:
         raise CmdException
+
+def get_confspace_size(all_flex_dict):
+    """
+    """
+    rots = read_rotamer_info(DEFAULT_ROT_FILE)
+    mut_prod = sum(rots.values())
+
+    confspace_size = 1
+
+    for strand_dict in all_flex_dict.values():
+        for res_allowed in strand_dict.values():
+            for res_type in res_allowed:
+                confspace_size = confspace_size * rots[res_type]
+    return confspace_size
+
+def get_num_res(all_flex_dict):
+    num_res = 0
+    for strand_dict in all_flex_dict.values():
+        num_res = num_res + len(strand_dict.keys())
+    return num_res
+
+def read_rotamer_info(rotamer_file):
+    """Read rotamer dat file and return a dict
+    """
+    rots = dict()
+    with open(rotamer_file, 'r') as f:
+        data = f.read()
+        m = re.findall(r"([A-Za-z]{3}) \d+ (\d+)", data)
+        for match in m:
+            # Account for wt rotamer by adding 1
+            rots[match[0]] = int(match[1])+1
+
+    return rots
 
 # Make this executable as a command from pymol
 cmd.extend( "print_design", print_design )
