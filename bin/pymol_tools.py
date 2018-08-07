@@ -119,6 +119,8 @@ def gen_shell(prune_sele=0, aggr=0, mut="mut", r=4):
 
     """
 
+    print "Debugging"
+    print prune_sele, aggr, mut, r
     # Define the flexible shell name
     if mut == "mut":
         flex_name = "flex"
@@ -174,7 +176,7 @@ def prune_distance(flex_sele_name, mut_list, flex_list, aggr, r, prune_sele):
         for mut in mut_list:
             #TODO: Make a decision on this. MAybe sc_any for bb flex?
             #if flex.min_sc_any_distance(mut) < (r-aggr*0.2):
-            if flex.min_sc_sc_distance(mut) < (r-aggr*0.2):
+            if flex.min_sc_sc_distance(mut) < (int(r)-int(aggr)*0.2):
                 to_prune = False
         if to_prune:
             do_pruning(flex_sele_name, flex, prune_sele)
@@ -236,7 +238,7 @@ def do_pruning(sele_name, res, prune_sele):
 
     """
 
-    if prune_sele:
+    if int(prune_sele):
         selection = ( sele_name+" and not (resi "+
                      str(res.res_seq)+res.i_code+
                      " and chain "+res.chain_id +")")
@@ -301,7 +303,7 @@ def test_gen():
         gen_shell(1,0,"mut",5)
 
         #print output
-        name = '_'.join([obj_name[:4], chain,"flexonly"])+".cfs"
+        name = '_'.join([obj_name[:4], chain])+".cfs"
         print_design("mut","flex",name)
         counter = counter+1
 
@@ -324,7 +326,9 @@ def gen_mut(sele_name):
     res_list = residue.Residue.sele_to_res(sele_name)
 
     # Add all single mutations
-    mut_list.update(frozenset([res]) for res in res_list)
+    # Added condition that we don't consider prolines
+    mut_list.update(frozenset([res]) for res in res_list if res.res_name !=
+                    "PRO")
 
     # Construct close pairs
     close_pairs = set( frozenset(e) for e in combinations(
@@ -427,8 +431,8 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
         chain_muts = (res for res in mut_list if res.chain_id == chain)
         for res in chain_muts:
             this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
-                    [res.res_name]
-                    #DEFAULT_MUTATIONS_ALL
+                    DEFAULT_MUTATIONS_ALL
+                    #[res.res_name]
         # For flexible residues in strand, add all mutations by default
         chain_muts = (res for res in flex_list if res.chain_id == chain)
         for res in chain_muts:
