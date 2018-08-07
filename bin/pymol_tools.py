@@ -122,8 +122,6 @@ def gen_shell(prune_sele=0, aggr=0, mut="mut", r=4):
 
     """
 
-    print "Debugging"
-    print prune_sele, aggr, mut, r
     # Define the flexible shell name
     if mut == "mut":
         flex_name = "flex"
