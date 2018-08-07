@@ -394,25 +394,27 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
         flex (str): PyMol selection name for the flexible design residues
         out (str): System path to output file
     """
-    # Find the input pdb file
-    pdb_file_name = find_pdb_file(mut, flex)
-
-    # Collect residue lists from selections
-    mut_list = residue.Residue.sele_to_res(mut)
-    flex_list = residue.Residue.sele_to_res(flex)
-
-    # Make sure we don't have the mutable residues in the flexible selection
-    if set(mut_list).intersection(set(flex_list)):
-        print ("You forgot to remove the mutable residues from the"+
-            "flexible ones!")
-        raise CmdException
-
     try:
+        ## Find the input pdb file
+        #pdb_file_name = find_pdb_file(mut, flex)
+
+        # Collect residue lists from selections
+        mut_list = residue.Residue.sele_to_res(mut)
+        flex_list = residue.Residue.sele_to_res(flex)
+
+        # Find the input pdb file
+        pdb_file_name = find_pdb_file(mut, flex)
+
+        # Make sure we don't have the mutable residues in the flexible selection
+        if set(mut_list).intersection(set(flex_list)):
+            raise CmdException("ERROR!: You forgot to remove the mutable residues from the"+
+                "flexible ones!")
+
         # Collect the chains required for design
         # Note that the "chain" function here comes from itertools
         chains = set([ res.chain_id for res in iterchain(mut_list, flex_list) ])
         if len(chains) !=2:
-            raise TooManyChainsException("Only two chains per design allowed")
+            raise TooManyChainsException("ERROR!: Only two chains per design allowed")
 
         # TODO: Consider changing the format to be easier to read and write...
         # For each chain, process muts and flex
@@ -462,8 +464,8 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
                 #f.write(strand+" = "+str(strand_defs[strand])+"\n")
             #for strand in strand_flex_all:
                 #f.write(strand+"_flex = "+str(strand_flex_all[strand])+"\n")
-    except TooManyChainsException:
-        print("Currently we only accept designs that have exactly two chains.")
+    except Exception as e:
+        print(e)
 
 
 def find_pdb_file(mut, flex):
@@ -481,8 +483,8 @@ def find_pdb_file(mut, flex):
     mut_obj_list = cmd.get_names("objects", 0, mut)
     flex_obj_list = cmd.get_names("objects", 0, flex)
 
-    assert len(mut_obj_list) == 1
-    assert len(flex_obj_list) == 1
+    assert len(mut_obj_list) == 1, "ERROR!: mut_obj_list has length %d, not 1." %len(mut_obj_list)
+    assert len(flex_obj_list) == 1, "ERROR!: flex_obj_list has length %d, not 1." %len(flex_obj_list)
 
     mut_obj = mut_obj_list[0]
     flex_obj = flex_obj_list[0]
