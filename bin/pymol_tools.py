@@ -42,6 +42,9 @@ HEADER = """#The following information is sufficient to generate an OSPREY 3.0
 """The header to write out to the config file
 """
 
+class TooManyChainsException(Exception):
+    pass
+
 def interface(sele1=None, sele2=None, d=4, sc_only=0):
     """Select and name the interfaces between selections.
 
@@ -406,58 +409,64 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
             "flexible ones!")
         raise CmdException
 
-    # Collect the chains required for design
-    # Note that the "chain" function here comes from itertools
-    chains = set([ res.chain_id for res in iterchain(mut_list, flex_list) ])
+    try:
+        # Collect the chains required for design
+        # Note that the "chain" function here comes from itertools
+        chains = set([ res.chain_id for res in iterchain(mut_list, flex_list) ])
+        if len(chains) !=2:
+            raise TooManyChainsException("Only two chains per design allowed")
 
-    # TODO: Consider changing the format to be easier to read and write...
-    # For each chain, process muts and flex
-    strand_defs = {}
-    strand_flex_all = {}
-    for counter, chain in enumerate(chains):
-        strand_key = STRAND_NAME+str(counter)
+        # TODO: Consider changing the format to be easier to read and write...
+        # For each chain, process muts and flex
+        strand_defs = {}
+        strand_flex_all = {}
+        for counter, chain in enumerate(chains):
+            strand_key = STRAND_NAME+str(counter)
 
-        # First, get all residues in chain
-        stored.all_res_list = []
-        cmd.iterate("chain "+chain+" and name ca",
-                    "stored.all_res_list.append(\"\"+chain+resi)")
-        # Store only the first and last
-        strand_defs[strand_key] = [ stored.all_res_list[0],
-                                                 stored.all_res_list[-1] ]
+            # First, get all residues in chain
+            stored.all_res_list = []
+            cmd.iterate("chain "+chain+" and name ca",
+                        "stored.all_res_list.append(\"\"+chain+resi)")
+            # Store only the first and last
+            strand_defs[strand_key] = [ stored.all_res_list[0],
+                                                     stored.all_res_list[-1] ]
 
-        # Define strand flexibilities / mutabilities
-        this_strand_flex = {}
-        # For mutable residues in strand, add all mutations by default
-        chain_muts = (res for res in mut_list if res.chain_id == chain)
-        for res in chain_muts:
-            this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
-                    DEFAULT_MUTATIONS_ALL
-                    #[res.res_name]
-        # For flexible residues in strand, add all mutations by default
-        chain_muts = (res for res in flex_list if res.chain_id == chain)
-        for res in chain_muts:
-            this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
-                    [res.res_name]
+            # Define strand flexibilities / mutabilities
+            this_strand_flex = {}
+            # For mutable residues in strand, add all mutations by default
+            chain_muts = (res for res in mut_list if res.chain_id == chain)
+            for res in chain_muts:
+                this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
+                        DEFAULT_MUTATIONS_ALL
+                        #[res.res_name]
+            # For flexible residues in strand, add all mutations by default
+            chain_muts = (res for res in flex_list if res.chain_id == chain)
+            for res in chain_muts:
+                this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
+                        [res.res_name]
 
-        strand_flex_all[strand_key] = this_strand_flex
+            strand_flex_all[strand_key] = this_strand_flex
 
-    conf_size = get_confspace_size(strand_flex_all)
-    conf_size_str = '%.3E' % conf_size
-    num_res = str(get_num_res(strand_flex_all))+"res"
-    # Modify out with confsize
-    basename, ext = os.path.splitext(out)
-    new_name = '_'.join([basename, num_res, conf_size_str])+ext
-    print "Writing "+new_name
-    # Print out variables
-    with open(new_name, 'w') as f:
-        f.write(HEADER+"\n")
-        f.write("mol = \""+str(pdb_file_name)+"\"\n")
-        f.write("strand_defs = "+str(strand_defs)+"\n")
-        f.write("strand_flex = "+str(strand_flex_all)+"\n")
-        #for strand in strand_defs:
-            #f.write(strand+" = "+str(strand_defs[strand])+"\n")
-        #for strand in strand_flex_all:
-            #f.write(strand+"_flex = "+str(strand_flex_all[strand])+"\n")
+        conf_size = get_confspace_size(strand_flex_all)
+        conf_size_str = '%.3E' % conf_size
+        num_res = str(get_num_res(strand_flex_all))+"res"
+        # Modify out with confsize
+        basename, ext = os.path.splitext(out)
+        new_name = '_'.join([basename, num_res, conf_size_str])+ext
+        print "Writing "+new_name
+        # Print out variables
+        with open(new_name, 'w') as f:
+            f.write(HEADER+"\n")
+            f.write("mol = \""+str(pdb_file_name)+"\"\n")
+            f.write("strand_defs = "+str(strand_defs)+"\n")
+            f.write("strand_flex = "+str(strand_flex_all)+"\n")
+            #for strand in strand_defs:
+                #f.write(strand+" = "+str(strand_defs[strand])+"\n")
+            #for strand in strand_flex_all:
+                #f.write(strand+"_flex = "+str(strand_flex_all[strand])+"\n")
+    except TooManyChainsException:
+        print("Currently we only accept designs that have exactly two chains.")
+
 
 def find_pdb_file(mut, flex):
     """
