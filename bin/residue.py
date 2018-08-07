@@ -288,6 +288,13 @@ class Residue(object):
         assert len(cbeta)==1
         return cbeta[0]
 
+    def get_hbeta(self):
+        """Return h-beta atom"""
+        hbeta = [ a for a in self.atom_list if a.name == '3HA' ]
+
+        assert len(hbeta)==1
+        return hbeta[0]
+
     def angles_diverge(self, other, angle=130):
         """
         """
@@ -305,7 +312,10 @@ class Residue(object):
         # Vector goes from ca of other (mutable) to cb of this (flexible)
         ca_cb = subtract(self.get_cbeta().loc, other.get_calpha().loc)
         # Vector goes from ca to cb of other (mutable)
-        mut_ca_cb = subtract(other.get_cbeta().loc, other.get_calpha().loc)
+        if other.res_name == "GLY":
+            mut_ca_cb = subtract(other.get_hbeta().loc, other.get_calpha().loc)
+        else:
+            mut_ca_cb = subtract(other.get_cbeta().loc, other.get_calpha().loc)
 
         # Normalize all vectors
         ca_ca_unit = ca_ca/norm(ca_ca)
