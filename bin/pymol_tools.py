@@ -580,9 +580,13 @@ def get_confspace_size(all_flex_dict):
     confspace_size = 1
 
     for strand_dict in all_flex_dict.values():
+        strand_cfs_size = 1 # for each strand
         for res_allowed in strand_dict.values():
+            pos_rots = 1 # for wild type rotamer
             for res_type in res_allowed:
-                confspace_size = confspace_size * rots[res_type]
+                pos_rots = pos_rots + rots[res_type]
+            strand_cfs_size = strand_cfs_size * pos_rots
+        confspace_size = confspace_size * strand_cfs_size
     return confspace_size
 
 def get_num_res(all_flex_dict):
@@ -599,8 +603,9 @@ def read_rotamer_info(rotamer_file):
         data = f.read()
         m = re.findall(r"([A-Za-z]{3}) \d+ (\d+)", data)
         for match in m:
-            # Account for wt rotamer by adding 1
-            rots[match[0]] = int(match[1])+1
+            rots[match[0]] = int(match[1])
+            if match[0] == "ALA" or match[0] == "GLY":
+                rots[match[0]] = rots[match[0]]+1
 
     return rots
 
