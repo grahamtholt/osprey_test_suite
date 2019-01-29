@@ -33,7 +33,10 @@ DEFAULT_MUTATIONS_ALL = [
 
 """
 
-DEFAULT_ROT_FILE = "../datafiles/LovellRotamer.dat"
+#DEFAULT_ROT_FILE = "../datafiles/LovellRotamer.dat"
+#"""The default rotamer file
+#"""
+DEFAULT_ROT_FILE = "/usr/project/dlab/Users/gth/projects/osprey_test_suite/datafiles/LovellRotamer.dat"
 """The default rotamer file
 """
 
