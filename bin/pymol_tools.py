@@ -35,7 +35,7 @@ DEFAULT_MUTATIONS_ALL = [
 
 MODULE_LOC = os.path.dirname((os.path.realpath(__file__)))
 
-DEFAULT_ROT_FILE = MODULE_LOC + "../datafiles/LovellRotamer.dat"
+DEFAULT_ROT_FILE = MODULE_LOC + "/../datafiles/LovellRotamer.dat"
 """The default rotamer file
 """
 
