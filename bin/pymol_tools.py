@@ -415,8 +415,6 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
         # Collect the chains required for design
         # Note that the "chain" function here comes from itertools
         chains = set([ res.chain_id for res in iterchain(mut_list, flex_list) ])
-        if len(chains) !=2:
-            raise TooManyChainsException("ERROR!: Only two chains per design allowed")
 
         # TODO: Consider changing the format to be easier to read and write...
         # For each chain, process muts and flex
