@@ -502,7 +502,7 @@ def find_pdb_file(mut, flex):
         # Return the relative path to the pdb
         # return pdb_rel
     else:
-        print "ERROR! Could not find pdb file. Please set manually"
+        print "WARNING! Could not find pdb file. Please set manually"
         return "UNSET"
 
 def load_cfs(cfs_file):
