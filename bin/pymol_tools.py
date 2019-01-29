@@ -33,10 +33,9 @@ DEFAULT_MUTATIONS_ALL = [
 
 """
 
-#DEFAULT_ROT_FILE = "../datafiles/LovellRotamer.dat"
-#"""The default rotamer file
-#"""
-DEFAULT_ROT_FILE = "/usr/project/dlab/Users/gth/projects/osprey_test_suite/datafiles/LovellRotamer.dat"
+MODULE_LOC = os.path.dirname((os.path.realpath(__file__)))
+
+DEFAULT_ROT_FILE = MODULE_LOC + "../datafiles/LovellRotamer.dat"
 """The default rotamer file
 """
 
