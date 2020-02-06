@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/2p4a/2p4a_C_6res_1.999E+07.cfs", 
+    "design name": "2p4a_C_1.999E+07", 
+    "epsilon": 0.68, 
+    "host": "grisman-40", 
+    "memory (GB)": 150, 
+    "pdb": "2p4a", 
+    "results": [
+        {
+            "kscore": "19.623538", 
+            "lowerbound": "18.855171", 
+            "sequence": "C62=asn", 
+            "upperbound": "19.714543"
+        }, 
+        {
+            "kscore": "18.128199", 
+            "lowerbound": "17.245688", 
+            "sequence": "C62=THR", 
+            "upperbound": "18.609479"
+        }, 
+        {
+            "kscore": "17.911002", 
+            "lowerbound": "17.271921", 
+            "sequence": "C62=ASP", 
+            "upperbound": "18.342230"
+        }, 
+        {
+            "kscore": "17.806189", 
+            "lowerbound": "17.157983", 
+            "sequence": "C62=CYS", 
+            "upperbound": "18.040497"
+        }, 
+        {
+            "kscore": "17.366853", 
+            "lowerbound": "16.624065", 
+            "sequence": "C62=SER", 
+            "upperbound": "17.848946"
+        }
+    ], 
+    "runtime (s)": 83.477421, 
+    "slurm err": "slurm-123178_14.err", 
+    "slurm out": "slurm-123178_14.out", 
+    "status": "FINISHED"
+}

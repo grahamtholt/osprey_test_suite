@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/3bua/3bua_B_4res_3.086E+05.cfs", 
+    "design name": "3bua_B_3.086E+05", 
+    "epsilon": 0.68, 
+    "host": "grisman-37", 
+    "memory (GB)": 150, 
+    "pdb": "3bua", 
+    "results": [
+        {
+            "kscore": "6.457071", 
+            "lowerbound": "5.696089", 
+            "sequence": "B216=thr", 
+            "upperbound": "6.885331"
+        }, 
+        {
+            "kscore": "5.975299", 
+            "lowerbound": "5.243871", 
+            "sequence": "B216=ASN", 
+            "upperbound": "6.399582"
+        }, 
+        {
+            "kscore": "5.095560", 
+            "lowerbound": "4.473838", 
+            "sequence": "B216=SER", 
+            "upperbound": "5.583378"
+        }, 
+        {
+            "kscore": "5.176975", 
+            "lowerbound": "4.596279", 
+            "sequence": "B216=CYS", 
+            "upperbound": "5.511290"
+        }, 
+        {
+            "kscore": "5.043006", 
+            "lowerbound": "4.273451", 
+            "sequence": "B216=GLN", 
+            "upperbound": "5.430471"
+        }
+    ], 
+    "runtime (s)": 77.592019, 
+    "slurm err": "slurm-123175_11.err", 
+    "slurm out": "slurm-123175_11.out", 
+    "status": "FINISHED"
+}

@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/3ma2/3ma2_B_2res_2.030E+03.cfs", 
+    "design name": "3ma2_B_2.030E+03", 
+    "epsilon": 0.68, 
+    "host": "grisman-37", 
+    "memory (GB)": 150, 
+    "pdb": "3ma2", 
+    "results": [
+        {
+            "kscore": "3.127593", 
+            "lowerbound": "2.783158", 
+            "sequence": "B331=ARG", 
+            "upperbound": "3.535761"
+        }, 
+        {
+            "kscore": "2.679180", 
+            "lowerbound": "2.372275", 
+            "sequence": "B331=HIP", 
+            "upperbound": "2.902596"
+        }, 
+        {
+            "kscore": "2.291057", 
+            "lowerbound": "1.797632", 
+            "sequence": "B331=LYS", 
+            "upperbound": "2.727151"
+        }, 
+        {
+            "kscore": "2.453476", 
+            "lowerbound": "2.137848", 
+            "sequence": "B331=PHE", 
+            "upperbound": "2.512499"
+        }, 
+        {
+            "kscore": "1.622261", 
+            "lowerbound": "1.315345", 
+            "sequence": "B331=HID", 
+            "upperbound": "2.052119"
+        }
+    ], 
+    "runtime (s)": 5.717399, 
+    "slurm err": "slurm-123172_8.err", 
+    "slurm out": "slurm-123172_8.out", 
+    "status": "FINISHED"
+}

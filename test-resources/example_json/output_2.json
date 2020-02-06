@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/4hem/4hem_A_2res_1.624E+03.cfs", 
+    "design name": "4hem_A_1.624E+03", 
+    "epsilon": 0.68, 
+    "host": "grisman-38", 
+    "memory (GB)": 150, 
+    "pdb": "4hem", 
+    "results": [
+        {
+            "kscore": "2.758295", 
+            "lowerbound": "2.535298", 
+            "sequence": "A96=ASP", 
+            "upperbound": "2.760153"
+        }, 
+        {
+            "kscore": "2.110045", 
+            "lowerbound": "1.515883", 
+            "sequence": "A96=CYS", 
+            "upperbound": "2.289540"
+        }, 
+        {
+            "kscore": "1.902705", 
+            "lowerbound": "1.232709", 
+            "sequence": "A96=TYR", 
+            "upperbound": "2.238301"
+        }, 
+        {
+            "kscore": "1.770000", 
+            "lowerbound": "1.488218", 
+            "sequence": "A96=GLU", 
+            "upperbound": "2.229051"
+        }, 
+        {
+            "kscore": "2.202943", 
+            "lowerbound": "1.538348", 
+            "sequence": "A96=TRP", 
+            "upperbound": "2.206776"
+        }
+    ], 
+    "runtime (s)": 2.816115, 
+    "slurm err": "slurm-123166_2.err", 
+    "slurm out": "slurm-123166_2.out", 
+    "status": "FINISHED"
+}

@@ -1,0 +1,13 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/2rf9/2rf9_D_8res_9.231E+07.cfs", 
+    "design name": "2rf9_D_9.231E+07", 
+    "epsilon": 0.68, 
+    "host": "jerry2", 
+    "memory (GB)": 150, 
+    "pdb": "2rf9", 
+    "results": "java.util.NoSuchElementException: no memory pool named PS Old Gen", 
+    "runtime (s)": 185.21725, 
+    "slurm err": "slurm-123185_21.err", 
+    "slurm out": "slurm-123185_21.out", 
+    "status": "ERROR"
+}

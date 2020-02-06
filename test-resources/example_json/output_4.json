@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/5a6y/5a6y_C_2res_1.624E+03.cfs", 
+    "design name": "5a6y_C_1.624E+03", 
+    "epsilon": 0.68, 
+    "host": "jerry1", 
+    "memory (GB)": 150, 
+    "pdb": "5a6y", 
+    "results": [
+        {
+            "kscore": "5.454751", 
+            "lowerbound": "4.730759", 
+            "sequence": "C7=ARG", 
+            "upperbound": "5.785230"
+        }, 
+        {
+            "kscore": "3.805197", 
+            "lowerbound": "3.200538", 
+            "sequence": "C7=LYS", 
+            "upperbound": "4.195670"
+        }, 
+        {
+            "kscore": "3.718944", 
+            "lowerbound": "3.362602", 
+            "sequence": "C7=HIP", 
+            "upperbound": "4.000520"
+        }, 
+        {
+            "kscore": "3.404973", 
+            "lowerbound": "2.822944", 
+            "sequence": "C7=thr", 
+            "upperbound": "3.647340"
+        }, 
+        {
+            "kscore": "3.411219", 
+            "lowerbound": "3.048881", 
+            "sequence": "C7=HID", 
+            "upperbound": "3.590709"
+        }
+    ], 
+    "runtime (s)": 3.145077, 
+    "slurm err": "slurm-123168_4.err", 
+    "slurm out": "slurm-123168_4.out", 
+    "status": "FINISHED"
+}

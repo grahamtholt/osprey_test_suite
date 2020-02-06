@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/4wyq/4wyq_B_3res_9.744E+03.cfs", 
+    "design name": "4wyq_B_9.744E+03", 
+    "epsilon": 0.68, 
+    "host": "grisman-40", 
+    "memory (GB)": 150, 
+    "pdb": "4wyq", 
+    "results": [
+        {
+            "kscore": "14.396127", 
+            "lowerbound": "13.622082", 
+            "sequence": "B319=ARG", 
+            "upperbound": "14.768892"
+        }, 
+        {
+            "kscore": "14.287947", 
+            "lowerbound": "13.370766", 
+            "sequence": "B319=LYS", 
+            "upperbound": "14.693704"
+        }, 
+        {
+            "kscore": "14.555537", 
+            "lowerbound": "13.961083", 
+            "sequence": "B319=HIP", 
+            "upperbound": "14.568590"
+        }, 
+        {
+            "kscore": "12.832613", 
+            "lowerbound": "12.262720", 
+            "sequence": "B319=leu", 
+            "upperbound": "13.139457"
+        }, 
+        {
+            "kscore": "12.435788", 
+            "lowerbound": "11.780373", 
+            "sequence": "B319=HID", 
+            "upperbound": "12.863911"
+        }
+    ], 
+    "runtime (s)": 4.272665, 
+    "slurm err": "slurm-123174_10.err", 
+    "slurm out": "slurm-123174_10.out", 
+    "status": "FINISHED"
+}

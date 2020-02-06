@@ -1,0 +1,13 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/4wyq/4wyq_B_6res_2.819E+08.cfs", 
+    "design name": "4wyq_B_2.819E+08", 
+    "epsilon": 0.68, 
+    "host": "jerry2", 
+    "memory (GB)": 150, 
+    "pdb": "4wyq", 
+    "results": "java.lang.NullPointerException", 
+    "runtime (s)": 2.444625, 
+    "slurm err": "slurm-123214_27.err", 
+    "slurm out": "slurm-123214_27.out", 
+    "status": "ERROR"
+}

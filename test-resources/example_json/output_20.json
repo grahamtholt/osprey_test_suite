@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/2rl0/2rl0_D_6res_6.366E+06.cfs", 
+    "design name": "2rl0_D_6.366E+06", 
+    "epsilon": 0.68, 
+    "host": "grisman-38", 
+    "memory (GB)": 150, 
+    "pdb": "2rl0", 
+    "results": [
+        {
+            "kscore": "15.055819", 
+            "lowerbound": "14.255427", 
+            "sequence": "D174=TRP", 
+            "upperbound": "15.548456"
+        }, 
+        {
+            "kscore": "14.792678", 
+            "lowerbound": "13.928262", 
+            "sequence": "D174=tyr", 
+            "upperbound": "15.284383"
+        }, 
+        {
+            "kscore": "14.713496", 
+            "lowerbound": "13.960266", 
+            "sequence": "D174=HIP", 
+            "upperbound": "15.190748"
+        }, 
+        {
+            "kscore": "14.740800", 
+            "lowerbound": "13.916671", 
+            "sequence": "D174=PHE", 
+            "upperbound": "15.148173"
+        }, 
+        {
+            "kscore": "13.747735", 
+            "lowerbound": "12.954386", 
+            "sequence": "D174=HID", 
+            "upperbound": "14.178787"
+        }
+    ], 
+    "runtime (s)": 701.32937, 
+    "slurm err": "slurm-123184_20.err", 
+    "slurm out": "slurm-123184_20.out", 
+    "status": "FINISHED"
+}

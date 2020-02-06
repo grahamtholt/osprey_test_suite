@@ -1,0 +1,13 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/3k3q/3k3q_B_9res_9.495E+09.cfs", 
+    "design name": "3k3q_B_9.495E+09", 
+    "epsilon": 0.68, 
+    "host": "jerry2", 
+    "memory (GB)": 150, 
+    "pdb": "3k3q", 
+    "results": "java.lang.NullPointerException", 
+    "runtime (s)": 86.593809, 
+    "slurm err": "slurm-123215_28.err", 
+    "slurm out": "slurm-123215_28.out", 
+    "status": "ERROR"
+}

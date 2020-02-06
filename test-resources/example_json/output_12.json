@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/2rf9/2rf9_A_5res_7.308E+04.cfs", 
+    "design name": "2rf9_A_7.308E+04", 
+    "epsilon": 0.68, 
+    "host": "jerry1", 
+    "memory (GB)": 150, 
+    "pdb": "2rf9", 
+    "results": [
+        {
+            "kscore": "16.891951", 
+            "lowerbound": "16.418238", 
+            "sequence": "A906=gly", 
+            "upperbound": "17.329749"
+        }, 
+        {
+            "kscore": "-4.263880", 
+            "lowerbound": "-4.737594", 
+            "sequence": "A906=ALA", 
+            "upperbound": "-4.263880"
+        }, 
+        {
+            "kscore": "-6.919827", 
+            "lowerbound": "-7.846031", 
+            "sequence": "A906=SER", 
+            "upperbound": "-6.819126"
+        }, 
+        {
+            "kscore": "none", 
+            "lowerbound": "-Infinity", 
+            "sequence": "A906=ASP", 
+            "upperbound": "-18.31016"
+        }, 
+        {
+            "kscore": "none", 
+            "lowerbound": "-Infinity", 
+            "sequence": "A906=PHE", 
+            "upperbound": "-25.95816"
+        }
+    ], 
+    "runtime (s)": 8.850158, 
+    "slurm err": "slurm-123176_12.err", 
+    "slurm out": "slurm-123176_12.out", 
+    "status": "FINISHED"
+}

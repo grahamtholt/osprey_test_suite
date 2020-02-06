@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/4wem/4wem_B_5res_2.014E+07.cfs", 
+    "design name": "4wem_B_2.014E+07", 
+    "epsilon": 0.68, 
+    "host": "grisman-38", 
+    "memory (GB)": 150, 
+    "pdb": "4wem", 
+    "results": [
+        {
+            "kscore": "10.407626", 
+            "lowerbound": "9.547413", 
+            "sequence": "B899=ARG", 
+            "upperbound": "10.742124"
+        }, 
+        {
+            "kscore": "10.245196", 
+            "lowerbound": "9.585365", 
+            "sequence": "B899=ASP", 
+            "upperbound": "10.483692"
+        }, 
+        {
+            "kscore": "10.052764", 
+            "lowerbound": "9.412944", 
+            "sequence": "B899=GLU", 
+            "upperbound": "10.443991"
+        }, 
+        {
+            "kscore": "9.289203", 
+            "lowerbound": "8.558062", 
+            "sequence": "B899=MET", 
+            "upperbound": "9.777791"
+        }, 
+        {
+            "kscore": "9.235475", 
+            "lowerbound": "8.373403", 
+            "sequence": "B899=THR", 
+            "upperbound": "9.714135"
+        }
+    ], 
+    "runtime (s)": 878.635026, 
+    "slurm err": "slurm-123213_26.err", 
+    "slurm out": "slurm-123213_26.out", 
+    "status": "FINISHED"
+}

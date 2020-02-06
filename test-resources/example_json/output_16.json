@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/4u3s/4u3s_B_3res_3.086E+04.cfs", 
+    "design name": "4u3s_B_3.086E+04", 
+    "epsilon": 0.68, 
+    "host": "jerry2", 
+    "memory (GB)": 150, 
+    "pdb": "4u3s", 
+    "results": [
+        {
+            "kscore": "7.521382", 
+            "lowerbound": "7.041201", 
+            "sequence": "B167=MET", 
+            "upperbound": "8.016052"
+        }, 
+        {
+            "kscore": "7.603086", 
+            "lowerbound": "6.931629", 
+            "sequence": "B167=ARG", 
+            "upperbound": "8.001108"
+        }, 
+        {
+            "kscore": "7.294476", 
+            "lowerbound": "6.775789", 
+            "sequence": "B167=LYS", 
+            "upperbound": "7.750397"
+        }, 
+        {
+            "kscore": "7.371519", 
+            "lowerbound": "7.143218", 
+            "sequence": "B167=leu", 
+            "upperbound": "7.649471"
+        }, 
+        {
+            "kscore": "7.459232", 
+            "lowerbound": "7.056189", 
+            "sequence": "B167=HIP", 
+            "upperbound": "7.581557"
+        }
+    ], 
+    "runtime (s)": 7.751975, 
+    "slurm err": "slurm-123180_16.err", 
+    "slurm out": "slurm-123180_16.out", 
+    "status": "FINISHED"
+}

@@ -1,0 +1,13 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/3u7y/3u7y_L_5res_5.769E+07.cfs", 
+    "design name": "3u7y_L_5.769E+07", 
+    "epsilon": 0.68, 
+    "host": "grisman-38", 
+    "memory (GB)": 150, 
+    "pdb": "3u7y", 
+    "results": "java.lang.NullPointerException", 
+    "runtime (s)": 3.245051, 
+    "slurm err": "slurm-123263_32.err", 
+    "slurm out": "slurm-123263_32.out", 
+    "status": "ERROR"
+}

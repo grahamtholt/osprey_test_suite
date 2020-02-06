@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/4kt6/4kt6_D_2res_3.857E+03.cfs", 
+    "design name": "4kt6_D_3.857E+03", 
+    "epsilon": 0.68, 
+    "host": "grisman-40", 
+    "memory (GB)": 150, 
+    "pdb": "4kt6", 
+    "results": [
+        {
+            "kscore": "3.802278", 
+            "lowerbound": "3.421016", 
+            "sequence": "D6=ARG", 
+            "upperbound": "4.288458"
+        }, 
+        {
+            "kscore": "3.340696", 
+            "lowerbound": "2.981143", 
+            "sequence": "D6=lys", 
+            "upperbound": "3.797137"
+        }, 
+        {
+            "kscore": "2.733409", 
+            "lowerbound": "2.391037", 
+            "sequence": "D6=HIP", 
+            "upperbound": "3.188593"
+        }, 
+        {
+            "kscore": "2.679439", 
+            "lowerbound": "2.249832", 
+            "sequence": "D6=MET", 
+            "upperbound": "3.032401"
+        }, 
+        {
+            "kscore": "2.350768", 
+            "lowerbound": "2.048190", 
+            "sequence": "D6=LEU", 
+            "upperbound": "2.799203"
+        }
+    ], 
+    "runtime (s)": 4.311685, 
+    "slurm err": "slurm-123167_3.err", 
+    "slurm out": "slurm-123167_3.out", 
+    "status": "FINISHED"
+}

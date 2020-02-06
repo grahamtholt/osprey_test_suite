@@ -1,0 +1,13 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/2rl0/2rl0_A_9res_2.526E+11.cfs", 
+    "design name": "2rl0_A_2.526E+11", 
+    "epsilon": 0.68, 
+    "host": "grisman-38", 
+    "memory (GB)": 150, 
+    "pdb": "2rl0", 
+    "results": "java.lang.NullPointerException", 
+    "runtime (s)": 64.059893, 
+    "slurm err": "slurm-123305_34.err", 
+    "slurm out": "slurm-123305_34.out", 
+    "status": "ERROR"
+}

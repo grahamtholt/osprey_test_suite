@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/4wyu/4wyu_A_3res_6.090E+03.cfs", 
+    "design name": "4wyu_A_6.090E+03", 
+    "epsilon": 0.68, 
+    "host": "grisman-37", 
+    "memory (GB)": 150, 
+    "pdb": "4wyu", 
+    "results": [
+        {
+            "kscore": "7.034633", 
+            "lowerbound": "6.781192", 
+            "sequence": "A177=gly", 
+            "upperbound": "7.414086"
+        }, 
+        {
+            "kscore": "none", 
+            "lowerbound": "-Infinity", 
+            "sequence": "A177=ILE", 
+            "upperbound": "-32.39350"
+        }, 
+        {
+            "kscore": "none", 
+            "lowerbound": "-Infinity", 
+            "sequence": "A177=TRP", 
+            "upperbound": "-42.22568"
+        }, 
+        {
+            "kscore": "none", 
+            "lowerbound": "-Infinity", 
+            "sequence": "A177=MET", 
+            "upperbound": "-42.25932"
+        }, 
+        {
+            "kscore": "none", 
+            "lowerbound": "-Infinity", 
+            "sequence": "A177=TYR", 
+            "upperbound": "-42.28289"
+        }
+    ], 
+    "runtime (s)": 3.796697, 
+    "slurm err": "slurm-123165_1.err", 
+    "slurm out": "slurm-123165_1.out", 
+    "status": "FINISHED"
+}

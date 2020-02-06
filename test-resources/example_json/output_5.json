@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/4wwi/4wwi_A_3res_4.547E+04.cfs", 
+    "design name": "4wwi_A_4.547E+04", 
+    "epsilon": 0.68, 
+    "host": "jerry2", 
+    "memory (GB)": 150, 
+    "pdb": "4wwi", 
+    "results": [
+        {
+            "kscore": "4.423153", 
+            "lowerbound": "3.782464", 
+            "sequence": "A2=GLU", 
+            "upperbound": "4.887872"
+        }, 
+        {
+            "kscore": "4.045699", 
+            "lowerbound": "3.590640", 
+            "sequence": "A2=asp", 
+            "upperbound": "4.516921"
+        }, 
+        {
+            "kscore": "3.225881", 
+            "lowerbound": "2.439044", 
+            "sequence": "A2=MET", 
+            "upperbound": "3.705743"
+        }, 
+        {
+            "kscore": "2.896173", 
+            "lowerbound": "2.378596", 
+            "sequence": "A2=GLN", 
+            "upperbound": "3.379249"
+        }, 
+        {
+            "kscore": "2.872740", 
+            "lowerbound": "2.235604", 
+            "sequence": "A2=HIE", 
+            "upperbound": "3.355521"
+        }
+    ], 
+    "runtime (s)": 46.352846, 
+    "slurm err": "slurm-123169_5.err", 
+    "slurm out": "slurm-123169_5.out", 
+    "status": "FINISHED"
+}

@@ -1,0 +1,44 @@
+{
+    "cfs": "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut/2hnv/2hnv_A_4res_5.846E+04.cfs", 
+    "design name": "2hnv_A_5.846E+04", 
+    "epsilon": 0.68, 
+    "host": "jerry1", 
+    "memory (GB)": 150, 
+    "pdb": "2hnv", 
+    "results": [
+        {
+            "kscore": "12.034662", 
+            "lowerbound": "11.503090", 
+            "sequence": "A25=HIP", 
+            "upperbound": "12.216102"
+        }, 
+        {
+            "kscore": "11.517092", 
+            "lowerbound": "10.741533", 
+            "sequence": "A25=ARG", 
+            "upperbound": "12.010671"
+        }, 
+        {
+            "kscore": "10.971422", 
+            "lowerbound": "10.257990", 
+            "sequence": "A25=LYS", 
+            "upperbound": "11.384374"
+        }, 
+        {
+            "kscore": "8.595228", 
+            "lowerbound": "8.067829", 
+            "sequence": "A25=HID", 
+            "upperbound": "8.862423"
+        }, 
+        {
+            "kscore": "8.222383", 
+            "lowerbound": "7.725985", 
+            "sequence": "A25=ASN", 
+            "upperbound": "8.539233"
+        }
+    ], 
+    "runtime (s)": 14.260221, 
+    "slurm err": "slurm-123181_17.err", 
+    "slurm out": "slurm-123181_17.out", 
+    "status": "FINISHED"
+}
