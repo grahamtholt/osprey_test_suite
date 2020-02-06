@@ -37,7 +37,7 @@ def main(args):
     # Setup
     orig_dir = os.getcwd()
     dir_name, pdb_name = os.path.split(os.path.abspath(args.pdb))
-    print dir_name, pdb_name
+    print(dir_name, pdb_name)
     out_dir = os.path.join(orig_dir, str(pdb_name)[:4].lower())
     os.mkdir(out_dir)
     os.chdir(dir_name)

@@ -92,7 +92,7 @@ def interface(sele1=None, sele2=None, d=4, sc_only=0):
         try:
             sele = cmd.select(sel_name, selection)
         except:
-            print "Error in selection: "+selection
+            print("Error in selection: "+selection)
             raise CmdException
 
         # Remove empty selections
@@ -101,13 +101,13 @@ def interface(sele1=None, sele2=None, d=4, sc_only=0):
             cmd.iterate(sel_name+" and name ca",
                         "stored.test.append(\"\"+resi)")
         except:
-            print "Cannot iterate through "+sel_name
+            print("Cannot iterate through "+sel_name)
             raise CmdException
         if not stored.test:
             try:
                 cmd.delete(sel_name)
             except:
-                print "Cannot delete "+sel_name
+                print("Cannot delete "+sel_name)
                 raise CmdException
 
 def gen_shell(prune_sele=0, aggr=0, mut="mut", r=4):
@@ -285,13 +285,13 @@ def test_gen():
         chains = cmd.get_chains(inter)
         inter_1 = inter+' and chain '+chains[0]
         inter_2 = inter+' and chain '+chains[1]
-        print inter_1
+        print(inter_1)
         mut_list.extend(gen_mut(inter_1))
-        print inter_2
+        print(inter_2)
         mut_list.extend(gen_mut(inter_2))
 
 
-    print 'Generated '+str(len(mut_list))+' sets of mutations'
+    print('Generated '+str(len(mut_list))+' sets of mutations')
     # For each mutable residue set, generate a flexible shell and print design
     counter = 0
     for mut in mut_list:
@@ -453,7 +453,7 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
         # Modify out with confsize
         basename, ext = os.path.splitext(out)
         new_name = '_'.join([basename, num_res, conf_size_str])+ext
-        print "Writing "+new_name
+        print("Writing "+new_name)
         # Print out variables
         with open(new_name, 'w') as f:
             f.write(HEADER+"\n")
@@ -499,7 +499,7 @@ def find_pdb_file(mut, flex):
         # Return the relative path to the pdb
         # return pdb_rel
     else:
-        print "WARNING! Could not find pdb file. Please set manually"
+        print("WARNING! Could not find pdb file. Please set manually")
         return "UNSET"
 
 def load_cfs(cfs_file):
@@ -538,13 +538,13 @@ def load_cfs(cfs_file):
         cmd.load(conf_space.mol)
     except:
         raise CmdException
-        print "Error! Cannot load pdb from "+conf_space.mol
+        print("Error! Cannot load pdb from "+conf_space.mol)
     try:
         cmd.select("mut", "none")
         cmd.select("flex", "none")
     except:
         raise CmdException
-        print "Error! Cannot select empty selections"
+        print("Error! Cannot select empty selections")
     # Select mutable residues
     for chain, resi_list in mut_dict.iteritems():
         if resi_list:

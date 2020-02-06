@@ -277,7 +277,7 @@ class Residue(object):
         """Return c-alpha atom"""
         calpha = [ a for a in self.atom_list if a.name == 'CA' ]
         if len(calpha) != 1:
-            print calpha
+            print(calpha)
         assert len(calpha)==1
         return calpha[0]
 

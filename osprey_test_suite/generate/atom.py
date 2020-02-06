@@ -350,7 +350,7 @@ class Atom(object):
                 e[6] = int(m.group(1))
                 e[7] = m.group(2)
             except:
-                print "Error in resi" + e[6]
+                print("Error in resi" + e[6])
                 raise Exception
 
             #make residues
