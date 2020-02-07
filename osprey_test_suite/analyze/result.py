@@ -76,6 +76,11 @@ class Result():
                 return False
         return True
 
+    def print_results(self):
+        """Prints K* results in a readable format"""
+        print('\n'.join([': '.join((e, str(self.results[e]))) for e in
+                         self.results.keys()]))
+
 
     def __eq__(self, other):
         return (self.design_name == other.design_name
@@ -114,6 +119,8 @@ class Bounds():
         """True if self.upper < other.upper
         """
         return self.upper < other.upper
+
     def __str__(self):
         return str.format("[%.3f, %.3f] (log10)" % (self.lower,
                                                     self.upper))
+
