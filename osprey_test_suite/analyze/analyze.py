@@ -4,7 +4,7 @@ from os import listdir
 from os.path import isfile, join, splitext
 import re
 import sys
-from testytools.result import Result as R
+from osprey_test_suite.analyze.result import Result as R
 
 TEST_FILE = "../tmp/test_results.json"
 TEST_DIR = "../191031_tests/outputs"
@@ -59,8 +59,9 @@ def group_designs( results, f=lambda x: x.design_name ):
 
     for r in results:
         if grouped[f(r)] is None:
-            grouped[f(r)] = list(r)
-        grouped[f(r)] = grouped[f(r)] + list(r)
+            grouped[f(r)] =[r]
+        else:
+            grouped[f(r)] = grouped[f(r)] + [r]
 
     return [ tuple(e) for e in grouped.values() ]
 

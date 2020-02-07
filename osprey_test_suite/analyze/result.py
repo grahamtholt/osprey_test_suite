@@ -2,7 +2,7 @@
 
 A class that represents the result of an OSPREY design
 """
-from design import HEADERS
+from osprey_test_suite.design.design import HEADERS
 import json
 
 def bounds(func):
