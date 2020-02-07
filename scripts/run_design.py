@@ -18,7 +18,7 @@ bounds on the partition functions for each state.
 ##################################################
 
 import argparse
-from testytools import design
+from osprey_test_suite.design import design
 import socket
 import sys
 import osprey

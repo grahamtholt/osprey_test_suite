@@ -8,7 +8,7 @@
 # 	alternative sbatch array line: --array=1-5
 # 	alternative sbatch array line: --array=1-50%5 
 
-script_loc=/usr/project/dlab/Users/gth/projects/SHARKStar/testing_framework/run_design.py
+script_loc=/usr/project/dlab/Users/gth/projects/osprey_test_suite/scripts/run_design.py
 
 # try to set JAVA_HOME correctly
 if [ ! -x "$JAVA_HOME/bin/java" ]; then

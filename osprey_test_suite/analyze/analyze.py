@@ -34,11 +34,38 @@ def report ( results_list ):
           % (len(results_list), len(finished), len(estimating), len(errors)))
 
 def print_errors( results_list ):
-    """Print a basic report on results in the input list
+    """Print any error messages
     """
     errors = [e for e in results_list if e.status == "ERROR"]
     errlist = [ '\t'.join((e.__dict__.get('slurm out'), e.errmsg)) for e in errors]
     print('\n'.join(errlist))
+
+def group_designs( results, f=lambda x: x.design_name ):
+    """Groups designs by property
+
+    Takes in a list of results and groups them into tuples by the specified
+    accessor function.
+
+    Args:
+        results: An iterable containing Results objects
+        f: A function returning the property to group by
+
+    Returns:
+        A list of tuples. Each tuple contains all results that are equal in the
+        specified property.
+    """
+    keys = set([ f(e) for e in results ])
+    grouped = dict.fromkeys(keys)
+
+    for r in results:
+        if grouped[f(r)] is None:
+            grouped[f(r)] = list(r)
+        grouped[f(r)] = grouped[f(r)] + list(r)
+
+    return [ tuple(e) for e in grouped.values() ]
+
+
+
 
 def print_csv( data, filename ):
     """Prints a list of iterables to file

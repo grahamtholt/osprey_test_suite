@@ -12,6 +12,8 @@ Script used to submit design tests using the slurm batch system
 #   Graham Holt
 ##################################################
 
+#TODO: Make directories configurable, not hardcoded
+
 ##################################################
 # Imports
 ##################################################
@@ -23,7 +25,7 @@ from shutil import copy
 ##################################################
 # Globals
 ##################################################
-FRAM_DIR = "/usr/project/dlab/Users/gth/projects/SHARKStar/testing_framework"
+FRAM_DIR = "/usr/project/dlab/Users/gth/projects/osprey_test_suite/scripts"
 
 DEBUG_DIR = "/usr/project/dlab/Users/gth/projects/SHARKStar/debug_tests"
 
