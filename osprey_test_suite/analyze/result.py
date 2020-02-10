@@ -4,6 +4,7 @@ A class that represents the result of an OSPREY design
 """
 from osprey_test_suite.design.design import HEADERS
 import json
+import re
 
 def bounds(func):
     """bounds
@@ -75,6 +76,12 @@ class Result():
             if self.results.get(s) != other.results.get(s):
                 return False
         return True
+ 
+    def get_cfssize(self):
+        """Return the cfssize"""
+        size_pattern = r"_(\d\.\d+E\+\d+)"
+        return float(re.search(size_pattern, self.design_name).group(1))
+
 
     def print_results(self):
         """Prints K* results in a readable format"""
