@@ -70,7 +70,7 @@ def group( results, f=lambda x: x.design_name ):
 def plot_all( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x: x.runtime, group_func=lambda x: x.algorithm ):
     """Plot data from all algorithms against a design property
     """
-    SYMBOL_LIST = ['go', 'bo', 'po', 'gx', 'bx', 'px']
+    SYMBOL_LIST = ['go', 'bo', 'mo', 'gx', 'bx', 'mx']
     STATUS_SYMBOLS = {'ERROR': 'r^', 'ESTIMATING': 'y^'}
     MARKER_SIZE = 7.5
 
@@ -105,7 +105,7 @@ def plot_all( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x
 
         counter = counter + 1
 
-    plt.legend()
+    plt.legend(loc='upper left')
     plt.show()
 
 def plot_vs( results,
@@ -117,7 +117,7 @@ def plot_vs( results,
     ## not currently implemented correctly
     raise NotImplementedError()
     ##
-    SYMBOL_LIST = ['go', 'bo', 'po', 'gx', 'bx', 'px']
+    SYMBOL_LIST = ['go', 'bo', 'mo', 'gx', 'bx', 'mx']
     STATUS_SYMBOLS = {'ERROR': 'r^', 'ESTIMATING': 'y^'}
     MARKER_SIZE = 7.5
 
