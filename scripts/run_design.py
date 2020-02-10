@@ -26,6 +26,7 @@ from math import floor
 import json
 import os
 
+
 # Main
 def main(args):
     # Record relevant parameters
@@ -38,10 +39,8 @@ def main(args):
     data["host"] = socket.gethostname()
     data["memory (GB)"] = design.HEAP_GB
     data["epsilon"] = args.epsilon
-    if (args.bbk):
-        data["algorithm"] = "BBK"
-    else:
-        data["algorithm"] = "SHARK"
+
+    data["algorithm"] = design.ALGO_LIST[args.algo]
 
     # Print out misc information
     print("Output_file: %s" % args.output)
@@ -52,7 +51,7 @@ def main(args):
     osprey.start(heapSizeMiB=floor(design.HEAP_GB * 953.674)) # Convert to MiB
     conf_spaces = design.make_confspace(args.cfsfile, data)
     shark = design.setup_design(conf_spaces, args.epsilon, args.numseqs,
-                                not(args.bbk), data)
+                                args.algo, data)
 
     # Write out JSON file before beginning computation
     with open(os.path.abspath(args.output), 'w') as f:
@@ -99,9 +98,11 @@ if __name__ == '__main__':
                         type=str,
                         default=None,
                         help = "slurm standard error")
-    parser.add_argument('-b', '--bbk',
-                        action="store_true",
-                        help = "slurm standard error")
+    parser.add_argument('-a', "--algo",
+                        help = "choose algorithm: <0> SHARK* <1> MARK* <2> BBK*",
+                        type = int,
+                        default = 0,
+                       )
 
     args = parser.parse_args()
 

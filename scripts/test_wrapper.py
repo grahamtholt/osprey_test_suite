@@ -58,10 +58,10 @@ def main(args):
     init(args.output, args.cfsfile, args.debug)
     # Call out to a slurm bash script
     os.system("sbatch --array=1-%d%%5 %s/slurm_array.sh %s %d" \
-              % ( num_lines,
-                  FRAM_DIR,
-                  os.path.split(args.cfsfile)[1],
-                  int(args.bbk)
+              % (num_lines,
+                 FRAM_DIR,
+                 os.path.split(args.cfsfile)[1],
+                 args.algo
                 ))
 
 ##################################################
@@ -85,9 +85,10 @@ if __name__ == '__main__':
                         default = '_'.join((date.today().strftime("%y%m%d"),
                                             "tests"))
                        )
-    parser.add_argument('-b', "--bbk",
-                        help = "use the BBK* design algorithm",
-                        action="store_true"
+    parser.add_argument('-a', "--algo",
+                        help = "choose algorithm: <0> SHARK* <1> MARK* <2> BBK*",
+                        type = int,
+                        default = 0,
                        )
 
 

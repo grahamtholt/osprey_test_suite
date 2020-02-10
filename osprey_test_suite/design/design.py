@@ -78,6 +78,8 @@ memory: The total RAM available to OSPREY
 
 DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S:%f"
 
+ALGO_LIST = ['SHARK', 'MARK', 'BBK']
+
 # Here we store selected OSPREY Settings
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 HEAP_GB = 150
@@ -161,7 +163,7 @@ def get_emat_name(fileName):
     m = re.search('/(\\w+)_[^/]*res\\_(\\d+\\.\\d+E\\+\\d+).cfs',fileName)
     return m.group(1)+'_'+m.group(2)
 
-def setup_design(conf_spaces, eps, num_seqs, use_shark, data):
+def setup_design(conf_spaces, eps, num_seqs, algo_index, data):
     """setup_design
 
     Set up the classes required to run the design
@@ -195,11 +197,11 @@ def setup_design(conf_spaces, eps, num_seqs, use_shark, data):
 
     # configure SHARK*/BBK* inputs for each conf space
     configure_bbk(design, minimizingEcalc, "shark", data["design name"],
-                  use_shark)
+                  algo_index)
 
     return design
 
-def configure_bbk(instance, minimizingEcalc, type_string, id_obj, useSHARKStar):
+def configure_bbk(instance, minimizingEcalc, type_string, id_obj, algo_index):
     """Configure the energy calculators and info for BBK* instance"""
 
     for info in instance.confSpaceInfos():
@@ -221,14 +223,23 @@ def configure_bbk(instance, minimizingEcalc, type_string, id_obj, useSHARKStar):
         info.confEcalcRigid = rigidConfEcalc
 
         # Specify the input for the partition functions. Providing the confUpperBoundcalc turns on SHARK*
-        if useSHARKStar :
-            info.pfuncFactory = osprey.PartitionFunctionFactory(
-                info.confSpace,
-                info.confEcalcMinimized,
-                info.id,
-                confUpperBoundcalc=rigidConfEcalc)
-        else :
-            info.pfuncFactory = osprey.PartitionFunctionFactory(info.confSpace, info.confEcalcMinimized, info.id)
+        if ALGO_LIST[algo_index] == 'SHARK':
+            impt_ecalc = rigidConfEcalc
+            choose_markstar=False
+        elif ALGO_LIST[algo_index] == 'MARK':
+            impt_ecalc = rigidConfEcalc
+            choose_markstar=True
+        else:
+            impt_ecalc = None
+            choose_markstar=False
+
+        info.pfuncFactory = osprey.PartitionFunctionFactory(
+            info.confSpace,
+            info.confEcalcMinimized,
+            info.id,
+            confUpperBoundcalc=impt_ecalc,
+            useMARK=choose_markstar
+        )
 
         # Set cache pattern
         info.pfuncFactory.setCachePattern('%s/emat.%s.%s'
@@ -279,7 +290,7 @@ def run(design, data):
 
     Runs the design instance
     """
-    print("\nRunning SHARK*")
+    print("\nRunning Algorithm")
     design_start = datetime.now()
     data['start_time'] = design_start.strftime(DATETIME_FORMAT)
     try:
@@ -297,5 +308,5 @@ def run(design, data):
     design_end = datetime.now()
     data['end_time'] = design_end.strftime(DATETIME_FORMAT)
     data['runtime (s)'] = (design_end - design_start).total_seconds()
-    print("SHARKStar Runtime (s): %d" % data['runtime (s)'])
+    print("Algorithm Runtime (s): %d" % data['runtime (s)'])
 
