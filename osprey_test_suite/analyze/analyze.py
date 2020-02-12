@@ -79,6 +79,7 @@ def plot_all( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x
 
     counter = 0
     for g in grouped:
+        g_label = group_func(g[0])
         # Plot different statuses differently
         for status in STATUS:
             f = [e for e in g if e.status == status.value]
@@ -86,7 +87,7 @@ def plot_all( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x
                 plt.loglog([x_accessor(e) for e in f],
                            [y_accessor(e) for e in f],
                            SYMBOL_LIST[counter],
-                           label=group_func(f[0]),
+                           label=g_label,
                            markersize=MARKER_SIZE
                           )
             else:
