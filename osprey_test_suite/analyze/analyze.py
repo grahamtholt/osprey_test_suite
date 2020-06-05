@@ -67,7 +67,7 @@ def group( results, f=lambda x: x.design_name ):
 
     return [ tuple(e) for e in grouped.values() ]
 
-def plot_all( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x: x.runtime, group_func=lambda x: x.algorithm ):
+def plot( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x: x.runtime, group_func=lambda x: x.algorithm ):
     """Plot data from all algorithms against a design property
     """
     SYMBOL_LIST = ['go', 'bo', 'mo', 'gx', 'bx', 'mx']
@@ -83,22 +83,32 @@ def plot_all( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x
         # Plot different statuses differently
         for status in STATUS:
             f = [e for e in g if e.status == status.value]
-            if status.value == 'FINISHED':
+            if status.value == 'FINISHED' and len(f)>0:
                 plt.loglog([x_accessor(e) for e in f],
                            [y_accessor(e) for e in f],
                            SYMBOL_LIST[counter],
                            label=g_label,
                            markersize=MARKER_SIZE
                           )
-            else:
+            elif len(f)>0:
+                # print output about unusual statuses
+                print("There were %d tests with status %s:" %(len(f), status.value))
+                status_points = zip(
+                    [x_accessor(e) for e in f],
+                    [y_accessor(e) if y_accessor(e) is not None
+                     else 1 for e in f]
+                )
+                print('\n'.join(["(%s, %s)" %(e[0], e[1]) for e in
+                                 status_points]))
+                # plot unusual statuses
                 plt.loglog([x_accessor(e) for e in f],
-                           [y_accessor(e) for e in f],
+                           [y_accessor(e) if y_accessor(e) is not None else 1 for e in f],
                            STATUS_SYMBOLS[status.value],
                            markersize=MARKER_SIZE
                           )
                 # plotting again for differentiation
                 plt.loglog([x_accessor(e) for e in f],
-                           [y_accessor(e) for e in f],
+                           [y_accessor(e) if y_accessor(e) is not None else 1 for e in f],
                            SYMBOL_LIST[counter],
                            markersize=0.5*MARKER_SIZE
                           )
@@ -107,7 +117,8 @@ def plot_all( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x
         counter = counter + 1
 
     plt.legend(loc='upper left')
-    plt.show()
+    #plt.show()
+    plt.savefig('test_plot.png')
 
 def plot_vs( results,
             y_accessor=lambda x: x.runtime,
