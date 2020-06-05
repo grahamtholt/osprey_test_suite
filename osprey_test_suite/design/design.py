@@ -163,7 +163,7 @@ def get_emat_name(fileName):
     m = re.search('/(\\w+)_[^/]*res\\_(\\d+\\.\\d+E\\+\\d+).cfs',fileName)
     return m.group(1)+'_'+m.group(2)
 
-def setup_design(conf_spaces, eps, num_seqs, algo_index, data):
+def setup_design(parallelism, conf_spaces, eps, num_seqs, algo_index, data):
     """setup_design
 
     Set up the classes required to run the design
@@ -175,7 +175,7 @@ def setup_design(conf_spaces, eps, num_seqs, algo_index, data):
     Returns a BBKStar instance, ready to run
     """
 
-    parallelism = osprey.Parallelism(cpuCores=20)
+    parallelism = osprey.Parallelism(cpuCores=parallelism)
 
     # how should we compute energies of molecules?
     minimizingEcalc = osprey.EnergyCalculator(conf_spaces['complex'],
@@ -256,10 +256,12 @@ def configure_bbk(instance, minimizingEcalc, type_string, id_obj, algo_index):
             'rigid')
 
         # Updating energy matrix?
-        info.ematCorrected =\
-            osprey.c.ematrix.UpdatingEnergyMatrix(
-                info.confSpace,
-                info.ematMinimized)
+        #info.ematCorrected =\
+            #osprey.c.ematrix.UpdatingEnergyMatrix(
+                #info.confSpace,
+                #info.ematMinimized,
+                #info.confEcalcMinimized
+            #)
 
         # how should confs be ordered and searched? (don't forget to capture emat by using a defaulted argument)
         def makeAStar_min(rcs, emat=info.ematMinimized):
