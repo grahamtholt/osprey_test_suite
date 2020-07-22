@@ -49,7 +49,7 @@ def main(args):
 
     # load pdb
     pymol.cmd.load(pdb_name)
-    pymol_tools.test_gen()
+    pymol_tools.test_gen(args.flexonly)
 
     # Copy .cfs files from current directory to pdb directory
     for f in glob.glob("*.cfs"):
@@ -71,6 +71,9 @@ if __name__ == '__main__':
             type = str,
             default = None,
             help = 'The pdb file from which to generate test designs')
+    parser.add_argument('-f', '--flexonly',
+                        action = 'store_true',
+                        help = 'Flag to allow mutable residues or not')
 
     args = parser.parse_args()
 

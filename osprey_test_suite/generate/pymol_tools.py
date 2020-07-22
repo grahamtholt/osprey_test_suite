@@ -35,7 +35,7 @@ DEFAULT_MUTATIONS_ALL = [
 
 MODULE_LOC = os.path.dirname((os.path.realpath(__file__)))
 
-DEFAULT_ROT_FILE = MODULE_LOC + "/../datafiles/LovellRotamer.dat"
+DEFAULT_ROT_FILE = MODULE_LOC + "/../../resources/datafiles/LovellRotamer.dat"
 """The default rotamer file
 """
 
@@ -258,7 +258,7 @@ def do_pruning(sele_name, res, prune_sele):
         except:
             raise CmdException
 
-def test_gen():
+def test_gen(flex_only=False):
     """Generate all reasonable designs from the current pdb
 
     Args:
@@ -307,7 +307,7 @@ def test_gen():
 
         #print output
         name = '_'.join([obj_name[:4], chain])+".cfs"
-        print_design("mut","flex",name)
+        print_design("mut", "flex", name, flex_only)
         counter = counter+1
 
     #optional, but slow
@@ -387,7 +387,7 @@ def gen_scenes(mut_list):
     # generate a reference
     cmd.create("reference", "all", 1, 1)
 
-def print_design(mut="mut", flex="flex", out="design.cfs"):
+def print_design(mut="mut", flex="flex", out="design.cfs", flex_only=False):
     """
     Print out the OSPREY config information for a design to file
 
@@ -436,10 +436,14 @@ def print_design(mut="mut", flex="flex", out="design.cfs"):
             # For mutable residues in strand, add all mutations by default
             chain_muts = (res for res in mut_list if res.chain_id == chain)
             for res in chain_muts:
-                this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
-                        DEFAULT_MUTATIONS_ALL
-                        #[res.res_name]
-            # For flexible residues in strand, add all mutations by default
+                if not flex_only:
+                    this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
+                            DEFAULT_MUTATIONS_ALL
+                else:
+                    this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
+                            [res.res_name]
+
+            # For flexible residues in strand, add only res name
             chain_muts = (res for res in flex_list if res.chain_id == chain)
             for res in chain_muts:
                 this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
@@ -575,7 +579,6 @@ def get_confspace_size(all_flex_dict):
     """
     """
     rots = read_rotamer_info(DEFAULT_ROT_FILE)
-    mut_prod = sum(rots.values())
 
     confspace_size = 1
 
