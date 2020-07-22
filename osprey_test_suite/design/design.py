@@ -246,8 +246,13 @@ def configure_bbk(instance, minimizingEcalc, type_string, id_obj, algo_index):
 
         # Set cache pattern
         info.pfuncFactory.setCachePattern('%s/emat.%s.%s'
-                                          % (XTMP_DIR, info.id, id_obj))
-        print('Cache pattern: %s/emat.%s.%s' % (XTMP_DIR, info.id, id_obj))
+                                          % (XTMP_DIR,
+                                             info.id,
+                                             id_obj))
+        print('Cache pattern: %s/emat.%s.%s'
+              % (XTMP_DIR,
+                 info.id,
+                 id_obj))
 
         # compute the energy matrices
         info.ematMinimized = info.pfuncFactory.getOrMakeEmat(
@@ -324,13 +329,24 @@ def make_complex_pfunc(numcores, conf_spaces, eps, num_seqs, algo_index, data):
         impt_ecalc = None
         choose_markstar=False
 
+    ident = "flexible_complex_confspace"
+
     pfuncFactory = osprey.PartitionFunctionFactory(
         flex_complex_space,
         confEcalcMinimized,
-        "flexible_complex_confspace",
+        ident,
         confUpperBoundcalc=impt_ecalc,
         useMARK=choose_markstar
     )
+    # Set cache pattern
+    pfuncFactory.setCachePattern('%s/emat.%s.%s'
+                                      % (XTMP_DIR,
+                                         ident,
+                                         data["design name"]))
+    print('Cache pattern: %s/emat.%s.%s'
+          % (XTMP_DIR,
+             ident,
+             data["design name"]))
 
     sequence = flex_complex_space.makeWildTypeSequence()
     rcs = sequence.makeRCs(flex_complex_space)
