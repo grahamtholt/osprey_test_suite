@@ -57,7 +57,7 @@ def main(args):
     num_lines = sum(1 for line in open(os.path.abspath(args.cfsfile)))
     init(args.output, args.cfsfile, args.debug)
     # Call out to a slurm bash script
-    os.system("sbatch --array=1-%d%%5 %s/slurm_array.sh %s %d" \
+    os.system("sbatch --array=1-%d%%8 %s/slurm_array.sh %s %d" \
               % (num_lines,
                  FRAM_DIR,
                  os.path.split(args.cfsfile)[1],

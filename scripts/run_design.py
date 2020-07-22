@@ -1,4 +1,5 @@
-#!/usr/project/dlab/Users/gth/code/osprey/virtual_envs/sharkstar/bin/python
+#!/usr/project/dlab/Users/gth/code/osprey/virtual_envs/sharkstar_refactor/bin/python
+######!/usr/project/dlab/Users/gth/code/osprey/virtual_envs/sharkstar/bin/python
 # -*- coding: utf-8 -*-
 """run_sharkstar.py
 
@@ -50,7 +51,7 @@ def main(args):
 
     osprey.start(heapSizeMiB=floor(design.HEAP_GB * 953.674)) # Convert to MiB
     conf_spaces = design.make_confspace(args.cfsfile, data)
-    shark = design.setup_design(conf_spaces, args.epsilon, args.numseqs,
+    shark = design.setup_design(args.num_cores,conf_spaces, args.epsilon, args.numseqs,
                                 args.algo, data)
 
     # Write out JSON file before beginning computation
@@ -102,6 +103,11 @@ if __name__ == '__main__':
                         help = "choose algorithm: <0> SHARK* <1> MARK* <2> BBK*",
                         type = int,
                         default = 0,
+                       )
+    parser.add_argument('-c', "--num-cores",
+                        help = "the number of cpus",
+                        type=int,
+                        default=20,
                        )
 
     args = parser.parse_args()
