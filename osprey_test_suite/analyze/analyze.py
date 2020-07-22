@@ -75,7 +75,8 @@ def plot( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x: x.
     MARKER_SIZE = 7.5
 
     grouped = group(results, f=group_func)
-    print("there are %d groups" % (len(grouped)))
+    print("there are %d groups:" % (len(grouped)))
+    print('\n'.join([group_func(e[0]) for e in grouped]))
 
     counter = 0
     for g in grouped:
@@ -119,6 +120,7 @@ def plot( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x: x.
     plt.legend(loc='upper left')
     #plt.show()
     plt.savefig('test_plot.png')
+    plt.close('all')
 
 def plot_vs( results,
             y_accessor=lambda x: x.runtime,
