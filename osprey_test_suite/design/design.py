@@ -279,6 +279,72 @@ def configure_bbk(instance, minimizingEcalc, type_string, id_obj, algo_index):
         info.confSearchFactoryRigid =\
                 osprey.KStar.ConfSearchFactory(makeRigidAStar)
 
+def make_complex_pfunc(numcores, conf_spaces, eps, num_seqs, algo_index, data):
+    """Make a single partition function for the flexible part of the complex
+    confspace. This will be useful for comparing the core of SHARK* to the core
+    of MARK*
+    """
+    parallelism = osprey.Parallelism(cpuCores=numcores)
+    data['numCpus'] = numcores
+
+    # make the flexible, complex confspace
+    flex_complex_space = conf_spaces['complex'].makeFlexibleCopy()
+
+    # how should we compute energies of molecules?
+    minimizingEcalc = osprey.EnergyCalculator(flex_complex_space,
+                                    conf_spaces['ffparams'],
+                                    parallelism=parallelism,
+                                   isMinimizing=True
+                                   )
+
+    eref = osprey.ReferenceEnergies(flex_complex_space, minimizingEcalc)
+    #Create a minimizing energy calculator
+    confEcalcMinimized = osprey.ConfEnergyCalculator(
+        flex_complex_space,
+        minimizingEcalc,
+        referenceEnergies=eref)
+
+    # BBK* needs rigid energies too
+    rigidEcalc = osprey.SharedEnergyCalculator(
+        minimizingEcalc,
+        isMinimizing=False)
+    rigidConfEcalc = osprey.ConfEnergyCalculatorCopy(
+        confEcalcMinimized,
+        rigidEcalc)
+    confEcalcRigid = rigidConfEcalc
+
+    # Specify the input for the partition functions. Providing the confUpperBoundcalc turns on SHARK*
+    if ALGO_LIST[algo_index] == 'SHARK':
+        impt_ecalc = rigidConfEcalc
+        choose_markstar=False
+    elif ALGO_LIST[algo_index] == 'MARK':
+        impt_ecalc = rigidConfEcalc
+        choose_markstar=True
+    else:
+        impt_ecalc = None
+        choose_markstar=False
+
+    pfuncFactory = osprey.PartitionFunctionFactory(
+        flex_complex_space,
+        confEcalcMinimized,
+        "flexible_complex_confspace",
+        confUpperBoundcalc=impt_ecalc,
+        useMARK=choose_markstar
+    )
+
+    sequence = flex_complex_space.makeWildTypeSequence()
+    rcs = sequence.makeRCs(flex_complex_space)
+
+    data['numconfs'] = rcs.getNumConformations().longValueExact()
+
+
+    return pfuncFactory.makePartitionFunctionFor(rcs,
+                                                 rcs.getNumConformations(),
+                                                 eps,
+                                                 sequence
+                                                )
+
+
 def parse_result(sequence):
     """parse_result
 
