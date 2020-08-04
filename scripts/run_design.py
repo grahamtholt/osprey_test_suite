@@ -49,7 +49,9 @@ def main(args):
     print("Running on host: %s" % socket.gethostname())
     sys.stdout.flush()
 
-    osprey.start(heapSizeMiB=floor(design.HEAP_GB * 953.674)) # Convert to MiB
+    osprey.start(heapSizeMiB=floor(design.HEAP_GB * 953.674),# Convert to MiB
+                 allowRemoteManagement=False
+                )
     conf_spaces = design.make_confspace(args.cfsfile, data)
     shark = design.setup_design(args.num_cores,conf_spaces, args.epsilon, args.numseqs,
                                 args.algo, data)

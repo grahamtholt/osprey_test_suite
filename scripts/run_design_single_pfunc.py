@@ -51,7 +51,8 @@ def main(args):
     print("Running on host: %s" % socket.gethostname())
     sys.stdout.flush()
 
-    osprey.start(heapSizeMiB=floor(design.HEAP_GB * 953.674)) # Convert to MiB
+    osprey.start(heapSizeMiB=floor(design.HEAP_GB * 953.674),
+                                  allowRemoteManagement=False) # Convert to MiB
     conf_spaces = design.make_confspace(args.cfsfile, data)
 
     # Write out JSON file before beginning computation
@@ -72,8 +73,12 @@ def main(args):
             args.algo, data)
 
         if args.algo != 0:
-            pfunc.init(args.epsilon)
-            pfunc.compute()
+            if args.algo == 1:
+                pfunc.init(args.epsilon)
+                pfunc.compute()
+            if args.algo == 2:
+                pfunc.setReportProgress(True)
+                pfunc.compute(2147483647)
 
         data["status"] = design.STATUS.FINISHED.value
 
