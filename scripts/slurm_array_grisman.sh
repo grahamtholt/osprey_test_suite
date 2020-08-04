@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --ntasks=1 
-#SBATCH -p compsci,grisman
-#SBATCH --exclude=linux[1-30],grisman-[17-24,26,29-32,34-35]
+#SBATCH -p grisman
+#NOT SBATCH --exclude=grisman-[17-24,26,29-32,34-35],jerry[1-3,7]
+#SBATCH --exclude=grisman-[17-24,26,29-32,34-35]
 #SBATCH -o slurm-%A_%a.out -e slurm-%A_%a.err
 #SBATCH --cpus-per-task=40
 #SBATCH --mem=150000
-#SBATCH --time="7-0"
 
 # NOTE: Currently the array job listing is taken care of in test_wrapper.py
 # 	alternative sbatch array line: --array=1-5

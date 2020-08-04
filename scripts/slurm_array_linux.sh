@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --ntasks=1 
-#SBATCH -p compsci,grisman
-#SBATCH --exclude=linux[1-30],grisman-[17-24,26,29-32,34-35]
+#SBATCH -p compsci
+#SBATCH --exclude=linux[1-30]
 #SBATCH -o slurm-%A_%a.out -e slurm-%A_%a.err
 #SBATCH --cpus-per-task=40
 #SBATCH --mem=150000
