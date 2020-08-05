@@ -72,13 +72,11 @@ def main(args):
             args.numseqs,
             args.algo, data)
 
-        if args.algo != 0:
-            if args.algo == 1:
-                pfunc.init(args.epsilon)
-                pfunc.compute()
-            if args.algo == 2:
-                pfunc.setReportProgress(True)
-                pfunc.compute(2147483647)
+        if args.algo == 2:
+            pfunc.setReportProgress(True)
+            pfunc.compute(2147483647)
+        elif args.algo==1:
+            pfunc.compute()
 
         data["status"] = design.STATUS.FINISHED.value
 
