@@ -12,8 +12,8 @@ Module containing metyhods to run design algorithms in OSPREY
 #   Graham Holt
 ##################################################
 
-# TODO: Make the JSON file print out at the beginning and then be overwritten
-# upon completion
+# TODO: Consolidate code. Currently setup_design, make_complex* and
+# configure_bbk all have some overlap
 
 ##################################################
 # Imports
@@ -295,27 +295,45 @@ def make_complex_pfunc(numcores, conf_spaces, eps, num_seqs, algo_index, data):
     confspace. This will be useful for comparing the core of SHARK* to the core
     of MARK*
     """
+    # make the flexible, complex confspace
+    flex_complex_space = conf_spaces['complex'].makeFlexibleCopy()
+    # make the factory
+    pfunc_factory = make_pfunc_factory(flex_complex_space,
+                                     conf_spaces['ffparams'],
+                                     numcores,
+                                     eps,
+                                     algo_index,
+                                     "flexible_complex_confspace",
+                                     data)
+    # make the pfunc for the wild-type sequence
+    return make_pfunc_for_sequence(flex_complex_space, pfunc_factory, eps, data,
+                                   seq_list=None)
+
+def make_pfunc_factory(conf_space, ffparams, numcores, eps, algo_index, emat_cache_pattern ,data):
+    """make_pfunc_factory
+
+    Return a PartitionFunctionFactory object for the input confspace, which we can use to make
+    partition functions for various sequences.
+    """
     parallelism = osprey.Parallelism(cpuCores=numcores)
     data['numCpus'] = numcores
 
-    # make the flexible, complex confspace
-    flex_complex_space = conf_spaces['complex'].makeFlexibleCopy()
-
     # how should we compute energies of molecules?
-    minimizingEcalc = osprey.EnergyCalculator(flex_complex_space,
-                                    conf_spaces['ffparams'],
+    minimizingEcalc = osprey.EnergyCalculator(conf_space,
+                                    ffparams,
                                     parallelism=parallelism,
                                    isMinimizing=True
                                    )
+    # Compute reference energies
+    eref = osprey.ReferenceEnergies(conf_space, minimizingEcalc)
 
-    eref = osprey.ReferenceEnergies(flex_complex_space, minimizingEcalc)
     #Create a minimizing energy calculator
     confEcalcMinimized = osprey.ConfEnergyCalculator(
-        flex_complex_space,
+        conf_space,
         minimizingEcalc,
         referenceEnergies=eref)
 
-    # BBK* needs rigid energies too
+    # we need rigid energies too for many algorithms
     rigidEcalc = osprey.SharedEnergyCalculator(
         minimizingEcalc,
         isMinimizing=False)
@@ -324,48 +342,67 @@ def make_complex_pfunc(numcores, conf_spaces, eps, num_seqs, algo_index, data):
         rigidEcalc)
     confEcalcRigid = rigidConfEcalc
 
-    # Specify the input for the partition functions. Providing the confUpperBoundcalc turns on SHARK*
-    if ALGO_LIST[algo_index] == 'SHARK':
+    # Specify the type of partitionFunction
+    if ALGO_LIST[algo_index] == 'SHARK': # using SHARK*
         impt_ecalc = rigidConfEcalc
         choose_markstar=False
-    elif ALGO_LIST[algo_index] == 'MARK':
+    elif ALGO_LIST[algo_index] == 'MARK': # using MARK*
         impt_ecalc = rigidConfEcalc
         choose_markstar=True
-    else:
+    else: # using Gradient descent pfunc
         impt_ecalc = None
         choose_markstar=False
 
-    ident = "flexible_complex_confspace"
-
     pfuncFactory = osprey.PartitionFunctionFactory(
-        flex_complex_space,
+        conf_space,
         confEcalcMinimized,
-        ident,
+        emat_cache_pattern,
         confUpperBoundcalc=impt_ecalc,
         useMARK=choose_markstar
     )
     # Set cache pattern
     pfuncFactory.setCachePattern('%s/emat.%s.%s'
                                       % (XTMP_DIR,
-                                         ident,
+                                         emat_cache_pattern,
                                          data["design name"]))
     print('Cache pattern: %s/emat.%s.%s'
           % (XTMP_DIR,
-             ident,
+             emat_cache_pattern,
              data["design name"]))
 
-    sequence = flex_complex_space.makeWildTypeSequence()
-    rcs = sequence.makeRCs(flex_complex_space)
+    return pfuncFactory
 
-    data['numconfs'] = rcs.getNumConformations().toString()
+def make_pfunc_for_sequence(conf_space, pfunc_factory, epsilon, data, seq_list=None):
+    """make_pfunc_for_sequence
 
+    Make a partition function for the given sequence and conf space from
+        the given pfunc_factory.
 
-    return pfuncFactory.makePartitionFunctionFor(rcs,
-                                                 rcs.getNumConformations(),
-                                                 eps,
-                                                 sequence
-                                                )
-
+    Args:
+        conf_space: SimpleConfSpace
+        pfunc_factory: PartitionFunctionFactory
+        epsilon: The target approximation error
+        data: A dictionary for recording test data -- side-effects
+        seq_list: List of 3-letter residue code strings, or None.
+            Residue code strings must be in the same order as positions in
+            conf_space
+    Returns:
+        Object inheriting the PartitionFunction interface
+    """
+    # make the sequence object
+    if seq_list is None:
+        sequence = conf_space.makeWildTypeSequence()
+    else:
+        sequence = conf_space.seqSpace.makeSequence(seq_list)
+    # make the rcs
+    rcs = sequence.makeRCs(conf_space)
+    data['numconfs'] = rcs.getNumConformations().toString() # record the size
+    # make the pfunc and return it
+    return pfunc_factory.makePartitionFunctionFor(rcs,
+                                                  rcs.getNumConformations(),
+                                                  epsilon,
+                                                  sequence
+                                                 )
 
 def parse_result(sequence):
     """parse_result
