@@ -82,6 +82,11 @@ DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S:%f"
 
 ALGO_LIST = ['SHARK', 'MARK', 'BBK']
 
+BBK_BATCH_SIZE = 8
+""" The number of conformations to compute before switching in BBK*. This has a
+HUGE impact on performance, and that impact depends on how many cores you are using.
+"""
+
 # Here we store selected OSPREY Settings
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
 HEAP_GB = 150
@@ -196,6 +201,7 @@ def setup_design(numcores, conf_spaces, eps, num_seqs, algo_index, data):
         epsilon=eps, # you proabably want something more precise in your real designs
         showPfuncProgress=True,
         maxSimultaneousMutations=9,
+        numConfsPerBatch=BBK_BATCH_SIZE
     )
 
     # configure SHARK*/BBK* inputs for each conf space
@@ -351,7 +357,7 @@ def make_complex_pfunc(numcores, conf_spaces, eps, num_seqs, algo_index, data):
     sequence = flex_complex_space.makeWildTypeSequence()
     rcs = sequence.makeRCs(flex_complex_space)
 
-    data['numconfs'] = rcs.getNumConformations().longValueExact()
+    data['numconfs'] = rcs.getNumConformations().toString()
 
 
     return pfuncFactory.makePartitionFunctionFor(rcs,
