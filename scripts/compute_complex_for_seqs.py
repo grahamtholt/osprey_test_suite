@@ -53,7 +53,13 @@ def main(args):
 
     osprey.start(heapSizeMiB=floor(design.HEAP_GB * 953.674),
                                   allowRemoteManagement=False) # Convert to MiB
-    conf_spaces = design.make_confspace(args.cfsfile, data)
+    conf_spaces = design.make_confspace(args.cfsfile, data,
+                                       cfs_dir =
+                                        "/usr/project/dlab/Users/gth/projects/osprey_test_suite/augmented_MARK_known"
+                                       )
+
+    # make structure to store compute time per sequence
+    compute_time_list = []
 
     # Write out JSON file before beginning computation
     with open(os.path.abspath(args.output), 'w') as f:
@@ -66,32 +72,59 @@ def main(args):
 
     try:
         print("\nMaking pfunc factory")
+
         pfunc_factory = design.make_pfunc_factory(
             conf_spaces['complex'],
             conf_spaces['ffparams'],
             args.num_cores,
             args.epsilon,
             args.algo,
-            "manual_seq",
+            "manual_seq_alg%d" % args.algo,
             data)
 
-        print("\nMaking pfunc for WT")
-        pfunc = design.make_pfunc_for_sequence(
-            conf_spaces['complex'],
-            pfunc_factory,
-            args.epsilon,
-            data,
-            None
-        )
+        for sequence in data["sequences"]:
+            precalc_start = datetime.now()# Handle timing for precalculation
 
-        print("\nComputing pfunc")
-        if args.algo == 2:
-            pfunc.setReportProgress(True)
-            pfunc.compute(2147483647)
-        else:
-            pfunc.compute()
+            print("\nMaking pfunc for %s" % sequence)
+            pfunc = design.make_pfunc_for_sequence(
+                conf_spaces['complex'],
+                pfunc_factory,
+                args.epsilon,
+                data,
+                sequence
+            )
+            precalc_end = datetime.now()
+            data['precalc_time'] = (precalc_end - precalc_start).total_seconds()
+
+            print("\nComputing pfunc")
+            compute_start = datetime.now()
+
+            if args.algo == 2:
+                pfunc.setReportProgress(True)
+                pfunc.compute(2147483647)
+            else:
+                pfunc.compute()
+
+            compute_end = datetime.now()
+            compute_time_list.append((compute_end - compute_start)
+                                     .total_seconds())
+
+            result_dict = {"lowerbound" : pfunc.getValues().calcLowerBound()
+                           .toString(),
+                           "upperbound" : pfunc.getValues().calcUpperBound()
+                           .toString(),
+                           "kscore" : None}
+
+            if data["results"] is None:
+                data["results"] = {', '.join(sequence): result_dict}
+            else:
+                data["results"][', '.join(sequence)] = result_dict
+
 
         data["status"] = design.STATUS.FINISHED.value
+        # can't use lists as keys, so turn into strings
+        seq_keys = [', '.join(e) for e in data["sequences"]] 
+        data["time_per_seq"] = dict(zip(seq_keys, compute_time_list))
 
     except (jpype.JavaException, AttributeError) as e:
         data["status"] = design.STATUS.ERROR.value
