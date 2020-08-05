@@ -39,9 +39,8 @@ import time
 # Globals
 ##################################################
 #
-CFS_DIR = \
+DEFAULT_CFS_DIR = \
 "/usr/project/dlab/Users/gth/projects/osprey_test_suite/updated_full_mut"
-#"/usr/project/dlab/Users/gth/projects/osprey_test_suite/2007_flex"
 """ The directory in which confspace files are kept
 """
 
@@ -103,7 +102,7 @@ class STATUS(Enum):
     FINISHED = "FINISHED"
     ERROR = "ERROR"
 
-def make_confspace (cfs_file, data):
+def make_confspace (cfs_file, data, cfs_dir=DEFAULT_CFS_DIR):
     """make_confspace
 
     Generate conf spaces from input file
@@ -122,9 +121,16 @@ def make_confspace (cfs_file, data):
     print("pdb: %s" % data["pdb"])
 
     # Load the design conformation space information
-    data["cfs"] = os.path.join(CFS_DIR, cfs_file)
+    data["cfs"] = os.path.join(cfs_dir, cfs_file)
     confspace = imp.load_source('confspace',data["cfs"])
     print("CFS File: %s" % data["cfs"])
+
+    # Get the sequences if they exist
+    try:
+        data["sequences"] = confspace.sequences
+    except AttributeError:
+        data["sequences"] = [None];
+
 
     ffparams = osprey.ForcefieldParams()
     mol = osprey.readPdb(confspace.mol)
@@ -167,7 +173,7 @@ def get_emat_name(fileName):
 
     Get a unique identifier for the energy matrices based on the filename
     """
-    m = re.search('/(\\w+)_[^/]*res\\_(\\d+\\.\\d+E\\+\\d+).cfs',fileName)
+    m = re.search('(\\w+)_[^/]*res\\_(\\d+\\.\\d+E\\+\\d+).cfs',fileName)
     return m.group(1)+'_'+m.group(2)
 
 def setup_design(numcores, conf_spaces, eps, num_seqs, algo_index, data):
@@ -393,7 +399,11 @@ def make_pfunc_for_sequence(conf_space, pfunc_factory, epsilon, data, seq_list=N
     if seq_list is None:
         sequence = conf_space.makeWildTypeSequence()
     else:
-        sequence = conf_space.seqSpace.makeSequence(seq_list)
+        # We have to use this datastructure to match lists
+        myList = jpype.java.util.ArrayList()
+        for s in seq_list:
+            myList.add(s)
+        sequence = conf_space.seqSpace.makeSequence(myList)
     # make the rcs
     rcs = sequence.makeRCs(conf_space)
     data['numconfs'] = rcs.getNumConformations().toString() # record the size

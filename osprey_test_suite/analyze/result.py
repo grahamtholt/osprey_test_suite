@@ -53,14 +53,17 @@ class Result():
                 return float(x)
 
         raw_results = kwargs.get("results", None)
-        if raw_results is not None:
-            self.results = dict( [ (e["sequence"],
-                                    Bounds(converter(e["lowerbound"]),
-                                           converter(e["upperbound"]),
-                                           converter(e["kscore"])
-                                          )
-                                   )
-                                  for e in raw_results])
+        try:
+            if raw_results is not None:
+                self.results = dict( [ (e["sequence"],
+                                        Bounds(converter(e["lowerbound"]),
+                                               converter(e["upperbound"]),
+                                               converter(e["kscore"])
+                                              )
+                                       )
+                                      for e in raw_results])
+        except Exception as e:
+            pass
 
     def consistent_with(self, other):
         """consistent_with
