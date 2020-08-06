@@ -4,6 +4,7 @@ from os import listdir
 from os.path import isfile, join, splitext
 import re
 import sys
+import numpy as np
 from osprey_test_suite.analyze.result import Result as R
 import matplotlib.pyplot as plt
 from osprey_test_suite.design.design import STATUS
@@ -171,7 +172,48 @@ def plot_vs( results,
                               )
             counter = counter + 1
 
+def plot_runtime_paired(results,
+                        group_func=lambda x: x.design_name,
+                        ref_func = lambda x: x.algorithm,
+                        reference="MARK"):
 
+    MARKER_SIZE = 7.5
+    y_accessor=lambda x: x.runtime
+
+    def getter(a, b, pick_reference=True):
+        if (ref_func(a)==reference) is pick_reference:
+            return y_accessor(a)
+        elif (ref_func(b)==reference) is pick_reference:
+            return y_accessor(b)
+        else:
+            return None
+
+    grouped = group(results, f=group_func)
+
+    pairs = [e for e in grouped if len(e)==2 and
+            e[0].runtime is not None and e[1].runtime is not None]
+
+    x = [getter(e[0], e[1], pick_reference=True) for e in pairs]
+    y = [getter(e[0], e[1], pick_reference=False) for e in pairs]
+
+    fig, ax = plt.subplots()
+    ax.loglog(x, y,'go', markersize=MARKER_SIZE, zorder=0)
+
+    # find the max and min limits
+    lims = [
+    np.min([ax.get_xlim(), ax.get_ylim()]),  # min of both axes
+    np.max([ax.get_xlim(), ax.get_ylim()]),  # max of both axes
+    ]
+
+    # now plot both limits against eachother
+    ax.loglog(lims, lims, 'k-', alpha=0.75, zorder=10)
+    ax.set_aspect('equal')
+    ax.set_xlim(lims)
+    ax.set_ylim(lims)
+
+    #plt.show()
+    plt.savefig('test_plot.png')
+    plt.close('all')
 
 def print_csv( data, filename ):
     """Prints a list of iterables to file
