@@ -78,6 +78,8 @@ def plot( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x: x.
     grouped = group(results, f=group_func)
     print("there are %d groups:" % (len(grouped)))
     print('\n'.join([group_func(e[0]) for e in grouped]))
+    # actually make the figure
+    fig, ax = plt.subplots()
 
     counter = 0
     for g in grouped:
@@ -86,7 +88,7 @@ def plot( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x: x.
         for status in STATUS:
             f = [e for e in g if e.status == status.value]
             if status.value == 'FINISHED' and len(f)>0:
-                plt.loglog([x_accessor(e) for e in f],
+                ax.loglog([x_accessor(e) for e in f],
                            [y_accessor(e) for e in f],
                            SYMBOL_LIST[counter],
                            label=g_label,
@@ -103,13 +105,13 @@ def plot( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x: x.
                 print('\n'.join(["(%s, %s)" %(e[0], e[1]) for e in
                                  status_points]))
                 # plot unusual statuses
-                plt.loglog([x_accessor(e) for e in f],
+                ax.loglog([x_accessor(e) for e in f],
                            [y_accessor(e) if y_accessor(e) is not None else 1 for e in f],
                            STATUS_SYMBOLS[status.value],
                            markersize=MARKER_SIZE
                           )
                 # plotting again for differentiation
-                plt.loglog([x_accessor(e) for e in f],
+                ax.loglog([x_accessor(e) for e in f],
                            [y_accessor(e) if y_accessor(e) is not None else 1 for e in f],
                            SYMBOL_LIST[counter],
                            markersize=0.5*MARKER_SIZE
@@ -118,10 +120,8 @@ def plot( results, x_accessor=lambda x: x.get_cfssize(), y_accessor=lambda x: x.
 
         counter = counter + 1
 
-    plt.legend(loc='upper left')
-    #plt.show()
-    plt.savefig('test_plot.png')
-    plt.close('all')
+    fig.legend(loc='upper left')
+    return fig, ax
 
 def plot_vs( results,
             y_accessor=lambda x: x.runtime,
@@ -188,7 +188,9 @@ def plot_runtime_paired(results,
         else:
             return None
 
-    grouped = group(results, f=group_func)
+    finished_results = [e for e in results if e.status=="FINISHED"]
+
+    grouped = group(finished_results, f=group_func)
 
     pairs = [e for e in grouped if len(e)==2 and
             e[0].runtime is not None and e[1].runtime is not None]
@@ -211,9 +213,7 @@ def plot_runtime_paired(results,
     ax.set_xlim(lims)
     ax.set_ylim(lims)
 
-    #plt.show()
-    plt.savefig('test_plot.png')
-    plt.close('all')
+    return fig, ax
 
 def print_csv( data, filename ):
     """Prints a list of iterables to file
