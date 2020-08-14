@@ -22,7 +22,7 @@ def load_results( dirname='./' ):
     data = [ R.from_file(open(f)) for f in files ]
     return data
 
-def report ( results_list ):
+def report ( results_list, verbose=False ):
     """Print a basic report on results in the input list
     """
     finished = [e for e in results_list if e.status == "FINISHED"]
@@ -35,6 +35,15 @@ def report ( results_list ):
                 %d threw an error
           """\
           % (len(results_list), len(finished), len(estimating), len(errors)))
+
+    if verbose:
+        print('\n'.join(
+            ['{:22} {:18} {:10}'.format(
+                e.__dict__.get('slurm out'),
+                e.design_name,
+                e.status)
+                for e in results_list]
+        ))
 
 def print_errors( results_list ):
     """Print any error messages
