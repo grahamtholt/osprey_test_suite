@@ -568,7 +568,7 @@ def load_cfs(cfs_file):
         mut_list = []
         flex_list = []
         chain = next(iter(d.keys()))[:1]
-        for res, mut_allowed in d.iteritems():
+        for res, mut_allowed in d.items():
             # Check to make sure all chains match
             this_chain = res[:1]
             assert chain == this_chain
@@ -596,7 +596,7 @@ def load_cfs(cfs_file):
         raise CmdException
         print("Error! Cannot select empty selections")
     # Select mutable residues
-    for chain, resi_list in mut_dict.iteritems():
+    for chain, resi_list in mut_dict.items():
         if resi_list:
             mut_selection = "mut or (chain "+chain+" and resi "+\
                     "+".join(resi_list)+")"
@@ -605,7 +605,7 @@ def load_cfs(cfs_file):
             except:
                 raise CmdException
     # Select flexible residues
-    for chain, resi_list in flex_dict.iteritems():
+    for chain, resi_list in flex_dict.items():
         if resi_list:
             flex_selection = "flex or (chain "+chain+" and resi "+\
                     "+".join(resi_list)+")"
