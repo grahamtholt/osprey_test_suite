@@ -88,7 +88,7 @@ HUGE impact on performance, and that impact depends on how many cores you are us
 
 # Here we store selected OSPREY Settings
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
-HEAP_GB = 150
+HEAP_GB = 240
 """ The Java heap size in GB"""
 
 ##################################################
@@ -197,6 +197,8 @@ def setup_design(numcores, conf_spaces, eps, num_seqs, algo_index, data):
                                     parallelism=parallelism,
                                    isMinimizing=True
                                    )
+    # record the seq tree file name
+    data['seq_tree_name'] = data["design name"]+"seqTree.tree"
 
     # configure basic inputs for SHARKStar
     design = osprey.BBKStar(
@@ -207,7 +209,9 @@ def setup_design(numcores, conf_spaces, eps, num_seqs, algo_index, data):
         epsilon=eps, # you proabably want something more precise in your real designs
         showPfuncProgress=True,
         maxSimultaneousMutations=9,
-        numConfsPerBatch=BBK_BATCH_SIZE
+        numConfsPerBatch=BBK_BATCH_SIZE,
+        maxNumConfsPerBatch=8,
+        #printSequenceTree=data["seq_tree_name"]
     )
 
     # configure SHARK*/BBK* inputs for each conf space
@@ -449,4 +453,17 @@ def run(design, data):
     data['end_time'] = design_end.strftime(DATETIME_FORMAT)
     data['runtime (s)'] = (design_end - design_start).total_seconds()
     print("Algorithm Runtime (s): %d" % data['runtime (s)'])
+    if design.complexSHARK is not None and design.proteinSHARK is not None and\
+        design.ligandSHARK is not None:
+        data['precompute_complex_time'] =\
+            design.complexSHARK.precomputedFlexComputeTime +\
+                design.proteinSHARK.precomputedFlexComputeTime +\
+                design.ligandSHARK.precomputedFlexComputeTime
+        data['make_pfunc_time'] =\
+            design.complexSHARK.pfuncCreationTime +\
+                design.proteinSHARK.pfuncCreationTime +\
+                design.ligandSHARK.pfuncCreationTime
+    else:
+        data['precompute_complex_time'] = 0
+        data['make_pfunc_time'] = 0
 
