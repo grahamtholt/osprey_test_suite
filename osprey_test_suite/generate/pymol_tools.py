@@ -360,13 +360,17 @@ def gen_mut(sele_name, max_num_mut, target_num_mut=None):
         A set of sets of Residue objects that are good design choices
     """
     mut_list = set()
-    res_list = residue.Residue.sele_to_res(sele_name)
-
-    # Add all single mutations
     # Added condition that we don't consider prolines
-    mut_list.update(frozenset([res]) for res in res_list if res.res_name !=
-                    "PRO" and res.res_name != "CYX")
+    res_list = [res for res in residue.Residue.sele_to_res(sele_name)
+                if res.res_name != "PRO" and res.res_name != "CYX"]
+    # Since we are working with sets, we'll just work with indices
+    res_dict = dict(zip(list(range(0,len(res_list))),
+                        res_list))
 
+    # Add all single mutation indices
+    mut_list.update(frozenset((i,)) for i in res_dict.keys())
+
+    # Determine how many mutations we want
     if target_num_mut is not None:
         max_num_mut = target_num_mut
 
@@ -374,9 +378,8 @@ def gen_mut(sele_name, max_num_mut, target_num_mut=None):
         return mut_list
 
     # Construct close pairs
-    close_pairs = set( frozenset(e) for e in combinations(
-        [ res for res in res_list ], 2)
-                        if e[0].min_sc_sc_distance(e[1]) < 3 )
+    close_pairs = set( frozenset(e) for e in combinations(res_dict.keys(), 2)
+                        if res_dict[e[0]].min_sc_sc_distance(res_dict[e[1]]) < 3 )
 
     # Add close pairs to muts
     mut_list.update(close_pairs)
@@ -398,10 +401,14 @@ def gen_mut(sele_name, max_num_mut, target_num_mut=None):
         old_set = new_mut_set
         mut_counter = mut_counter + 1
 
+    #convert back from indices to residue objects
+    def recover_res(tup):
+        return tuple([res_dict[e] for e in tup])
+
     if target_num_mut is not None:
-        return [e for e in mut_list if len(e)==target_num_mut]
+        return [recover_res(e) for e in mut_list if len(e)==target_num_mut]
     else:
-        return mut_list
+        return [recover_res(e) for e in mut_list]
 
 def is_globular(mut_set, dist):
     max_dist = 0
@@ -451,9 +458,10 @@ def print_design(mut="mut", flex="flex", out="design.cfs", flex_only=False,
         pdb_file_name = find_pdb_file(mut, flex)
 
         # Make sure we don't have the mutable residues in the flexible selection
-        if set(mut_list).intersection(set(flex_list)):
+        if set(e.str_long() for e in mut_list).intersection(
+            set(e.str_long() for e in flex_list)):
             raise CmdException("ERROR!: You forgot to remove the mutable residues from the"+
-                "flexible ones!")
+                " flexible ones!")
 
         # Collect the chains required for design
         # Note that the "chain" function here comes from itertools

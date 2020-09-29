@@ -163,6 +163,14 @@ class Residue(object):
     def res_to_pdb(self):
         return ("\n".join((str(e) for e in self.atom_list)))+"\n"
 
+    def str_long(self):
+        return ''.join((
+            str(self.chain_id),
+            str(self.res_seq),
+            str(self.i_code),
+            str(self.res_name)
+        ))
+
     def __str__(self):
         return ''.join((self.res_name, str(self.res_seq)))
 
