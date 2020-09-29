@@ -33,6 +33,34 @@ DEFAULT_MUTATIONS_ALL = [
 
 """
 
+SIMILAR_MUTATIONS_1 = {
+    'ALA': ['GLY', 'SER', 'THR', 'VAL', 'ALA'],
+    'VAL': ['VAL', 'LEU', 'ILE', 'PHE', 'TYR'],
+    'LEU': ['VAL', 'LEU', 'ILE', 'PHE', 'TYR'],
+    'ILE': ['VAL', 'LEU', 'ILE', 'PHE', 'TYR'],
+    'PHE': ['VAL', 'LEU', 'ILE', 'PHE', 'TYR'],
+    'TYR': ['VAL', 'LEU', 'ILE', 'PHE', 'TYR'],
+    'TRP': ['TRP', 'LEU', 'ILE', 'PHE', 'TYR'],
+    'CYS': ['ASP', 'GLU', 'ASN', 'GLN', 'HID'],
+    'MET': ['VAL', 'LEU', 'ILE', 'PHE', 'TYR'],
+    'SER': ['GLY', 'SER', 'THR', 'VAL', 'ALA'],
+    'THR': ['GLY', 'SER', 'THR', 'VAL', 'ALA'],
+    'LYS': ['LYS', 'ARG', 'GLN', 'ASN', 'HID', 'THR'],
+    'ARG': ['LYS', 'ARG', 'GLN', 'ASN', 'HID', 'THR'],
+    'HIP': ['ASP', 'GLU', 'ASN', 'GLN', 'HID', 'THR'],
+    'HIE': ['ASP', 'GLU', 'ASN', 'GLN', 'HID', 'THR'],
+    'HID': ['ASP', 'GLU', 'ASN', 'GLN', 'HID', 'THR'],
+    'ASP': ['ASP', 'GLU', 'ASN', 'GLN', 'HID', 'THR'],
+    'GLU': ['ASP', 'GLU', 'ASN', 'GLN', 'HID', 'THR'],
+    'ASN': ['ASP', 'GLU', 'ASN', 'GLN', 'HID', 'THR'],
+    'GLN': ['ASP', 'GLU', 'ASN', 'GLN', 'HID', 'THR'],
+    'GLY': ['GLY', 'SER', 'THR', 'VAL', 'ALA', 'THR']
+}
+"""dict: Dictionary of amino acid templates by AA. Goal is to provide a smaller
+set of mutations for designs. Current limit is 5 mutations.
+
+"""
+
 MODULE_LOC = os.path.dirname((os.path.realpath(__file__)))
 
 DEFAULT_ROT_FILE = MODULE_LOC + "/../../resources/datafiles/LovellRotamer.dat"
@@ -258,7 +286,8 @@ def do_pruning(sele_name, res, prune_sele):
         except:
             raise CmdException
 
-def test_gen(max_num_mut=6, target_num_mut=None, flex_only=False):
+def test_gen(max_num_mut=6, target_num_mut=None, flex_only=False,
+             limit_seqspace=False):
     """Generate all reasonable designs from the current pdb
 
     Args:
@@ -310,7 +339,7 @@ def test_gen(max_num_mut=6, target_num_mut=None, flex_only=False):
 
         #print output
         name = '_'.join([obj_name[:4], chain])+".cfs"
-        print_design("mut", "flex", name, flex_only)
+        print_design("mut", "flex", name, flex_only, limit_seqspace)
         counter = counter+1
 
     #optional, but slow
@@ -400,7 +429,8 @@ def gen_scenes(mut_list):
     # generate a reference
     cmd.create("reference", "all", 1, 1)
 
-def print_design(mut="mut", flex="flex", out="design.cfs", flex_only=False):
+def print_design(mut="mut", flex="flex", out="design.cfs", flex_only=False,
+                 limit_seqspace = False):
     """
     Print out the OSPREY config information for a design to file
 
@@ -449,12 +479,15 @@ def print_design(mut="mut", flex="flex", out="design.cfs", flex_only=False):
             # For mutable residues in strand, add all mutations by default
             chain_muts = (res for res in mut_list if res.chain_id == chain)
             for res in chain_muts:
+                allowed_mutations = [res.res_name]
                 if not flex_only:
-                    this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
-                            DEFAULT_MUTATIONS_ALL
-                else:
-                    this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] = \
-                            [res.res_name]
+                    if limit_seqspace:
+                        allowed_mutations = SIMILAR_MUTATIONS_1[res.res_name]
+                    else:
+                        allowed_mutations = DEFAULT_MUTATIONS_ALL
+
+                this_strand_flex[res.chain_id+str(res.res_seq)+res.i_code] =\
+                    allowed_mutations
 
             # For flexible residues in strand, add only res name
             chain_muts = (res for res in flex_list if res.chain_id == chain)

@@ -50,7 +50,8 @@ def main(args):
     # load pdb
     pymol.cmd.load(pdb_name)
     pymol_tools.test_gen(target_num_mut=args.nummuts,
-                         flex_only=args.flexonly)
+                         flex_only=args.flexonly,
+                        limit_seqspace=args.limitseqspace)
 
     # Copy .cfs files from current directory to pdb directory
     for f in glob.glob("*.cfs"):
@@ -79,6 +80,9 @@ if __name__ == '__main__':
                         type = int,
                         default=None,
                         help = 'How many mutable residues are we targeting?')
+    parser.add_argument('-l', '--limitseqspace',
+                        action = 'store_true',
+                        help = 'Limit seqSpace to a smaller set')
 
     args = parser.parse_args()
 
