@@ -284,14 +284,17 @@ class Residue(object):
     def get_cbeta(self):
         """Return c-beta atom"""
         cbeta = [ a for a in self.atom_list if a.name == 'CB' ]
-
+        if len(cbeta) != 1:
+            print(cbeta)
         assert len(cbeta)==1
         return cbeta[0]
 
     def get_hbeta(self):
         """Return h-beta atom"""
-        hbeta = [ a for a in self.atom_list if a.name == '3HA' ]
-
+        hbeta = [ a for a in self.atom_list if a.name == '3HA' 
+                or a.name == 'HA3']
+        if len(hbeta) != 1:
+            print(self)
         assert len(hbeta)==1
         return hbeta[0]
 
