@@ -49,7 +49,8 @@ def main(args):
 
     # load pdb
     pymol.cmd.load(pdb_name)
-    pymol_tools.test_gen(args.flexonly)
+    pymol_tools.test_gen(target_num_mut=args.nummuts,
+                         flex_only=args.flexonly)
 
     # Copy .cfs files from current directory to pdb directory
     for f in glob.glob("*.cfs"):
@@ -74,6 +75,10 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--flexonly',
                         action = 'store_true',
                         help = 'Flag to allow mutable residues or not')
+    parser.add_argument('-n', '--nummuts',
+                        type = int,
+                        default=None,
+                        help = 'How many mutable residues are we targeting?')
 
     args = parser.parse_args()
 

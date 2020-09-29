@@ -258,10 +258,13 @@ def do_pruning(sele_name, res, prune_sele):
         except:
             raise CmdException
 
-def test_gen(flex_only=False):
+def test_gen(max_num_mut=6, target_num_mut=None, flex_only=False):
     """Generate all reasonable designs from the current pdb
 
     Args:
+        max_num_mut (int): The maximum number of mutations to allow
+        target_num_mut (int): Only return mutable sets of this size
+        flex_only (boolean): Allow mutations?
 
     Raises:
         CmdException: Error in a PyMol command
@@ -286,9 +289,9 @@ def test_gen(flex_only=False):
         inter_1 = inter+' and chain '+chains[0]
         inter_2 = inter+' and chain '+chains[1]
         print(inter_1)
-        mut_list.extend(gen_mut(inter_1))
+        mut_list.extend(gen_mut(inter_1, max_num_mut, target_num_mut))
         print(inter_2)
-        mut_list.extend(gen_mut(inter_2))
+        mut_list.extend(gen_mut(inter_2, max_num_mut, target_num_mut))
 
 
     print('Generated '+str(len(mut_list))+' sets of mutations')
@@ -313,7 +316,7 @@ def test_gen(flex_only=False):
     #optional, but slow
     #gen_scenes(mut_list)
 
-def gen_mut(sele_name):
+def gen_mut(sele_name, max_num_mut, target_num_mut=None):
     """Select combinations of mutable residues
 
     Selects all possible combinations of good mutable residues within an
@@ -321,6 +324,8 @@ def gen_mut(sele_name):
 
     Args:
         sele_name (string): The name of a PyMol selection that defines a PPI
+        max_num_mut (int): The maximum number of mutations to allow
+        target_num_mut (int): Only return mutable sets of this size
 
     Returns:
         A set of sets of Residue objects that are good design choices
@@ -331,7 +336,13 @@ def gen_mut(sele_name):
     # Add all single mutations
     # Added condition that we don't consider prolines
     mut_list.update(frozenset([res]) for res in res_list if res.res_name !=
-                    "PRO")
+                    "PRO" and res.res_name != "CYX")
+
+    if target_num_mut is not None:
+        max_num_mut = target_num_mut
+
+    if max_num_mut < 2:
+        return mut_list
 
     # Construct close pairs
     close_pairs = set( frozenset(e) for e in combinations(
@@ -343,7 +354,6 @@ def gen_mut(sele_name):
 
     # Iteratively union close pairs until cannot any longer
     # Or, if we reach a maximum of 6 mutable residues
-    max_num_mut = 6
     mut_counter = 2
     new_union = True
     old_set = close_pairs
@@ -359,7 +369,10 @@ def gen_mut(sele_name):
         old_set = new_mut_set
         mut_counter = mut_counter + 1
 
-    return mut_list
+    if target_num_mut is not None:
+        return [e for e in mut_list if len(e)==target_num_mut]
+    else:
+        return mut_list
 
 def is_globular(mut_set, dist):
     max_dist = 0
