@@ -223,10 +223,8 @@ class Atom(object):
     def temp(self, value):
         if type(value) is not float:
             raise TypeError('temp must be a float')
-        elif len(str(value)) <= 6:
-            self._temp = value
         else:
-            raise ValueError('temp is out of bounds')
+            self._temp = value
 
     # ele
     @property

@@ -285,8 +285,8 @@ class Residue(object):
         """Return c-alpha atom"""
         calpha = [ a for a in self.atom_list if a.name == 'CA' ]
         if len(calpha) != 1:
-            print(calpha)
-        assert len(calpha)==1
+            print(self)
+        #assert len(calpha)==1
         return calpha[0]
 
     def get_cbeta(self):
@@ -294,7 +294,7 @@ class Residue(object):
         cbeta = [ a for a in self.atom_list if a.name == 'CB' ]
         if len(cbeta) != 1:
             print(cbeta)
-        assert len(cbeta)==1
+        #assert len(cbeta)==1
         return cbeta[0]
 
     def get_hbeta(self):
@@ -303,7 +303,7 @@ class Residue(object):
                 or a.name == 'HA3']
         if len(hbeta) != 1:
             print(self)
-        assert len(hbeta)==1
+        #assert len(hbeta)==1
         return hbeta[0]
 
     def angles_diverge(self, other, angle=130):
